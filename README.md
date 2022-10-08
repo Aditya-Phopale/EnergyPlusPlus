@@ -5,6 +5,10 @@ BGCE class 22-23' honours project
 
 -- some description goes here --  
 
+#### How to run web wrapping  
+To test web staff, first do `pip install flask flask-cors` either in virtual env, or locally  
+Open frontend/index.html with a web browser, then run backend/app.py  
+
 ---
 
 #### Section to-be moved or removed description before merging into main
