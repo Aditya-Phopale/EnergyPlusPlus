@@ -5,6 +5,8 @@ import flask
 import json
 from flask_cors import CORS
 
+import detection_tools as dt
+
 app = Flask(__name__)
 CORS(app)
 
@@ -16,11 +18,10 @@ def callback():
         return_data = {
             "status": "success"
         }
-        # add boxes and return boxed image?
-        # dummy "OK" responce for now
+        
+        floor_plan = dt.msg_to_png(received_data)
+        rooms_image, labels = dt.detect_rooms(floor_plan)
 
-        # filter_preprocess()
-        # image, labels = yolov5() maybe save image for us
         # send image to front to display
 
         return flask.Response(response=return_data, status=201)
