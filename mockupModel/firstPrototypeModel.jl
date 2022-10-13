@@ -60,6 +60,31 @@ buildNetwork[:room_4, :room_0] = Wall(2.7, 0.25);
 #	print(read(file, String))
 #end
 
+###
+
+## Three Port
+function ThreePort(; name, v1_start = 0.0, v2_start = 0.0, i1_start = 0.0, i2_start = 0.0, i3_start = 0.0)
+    @named p1 = Pin()
+    @named p2 = Pin()
+    @named n = Pin()
+    sts = @variables begin
+        v1(t) = v1_start
+        v2(t) = v2_start
+        i1(t) = i1_start
+        i2(t) = i2_start
+        i3(t) = i3_start
+        vc(t) = v1_start
+    end
+    eqs = [v1 ~ p1.v - n.v
+           v2 ~ p2.v - n.v
+           0 ~ p1.i + p2.i - n.i
+           i1 ~ p1.i
+           i2 ~ p2.i
+           i3 ~ n.i
+          ]
+    return compose(ODESystem(eqs, t, sts, []; name = name), p1, p2, n)
+end
+
 ## Wall function
 function wall_2R1C(; name, R1, R2, C)
     
@@ -72,52 +97,68 @@ function wall_2R1C(; name, R1, R2, C)
         C = C
     end 
 
-    # @named r1 = Resistor(R=R1)
-    # @named r2 = Resistor(R=R2)
-    # @named capacitor = Capacitor(C=C)
-
     wall_eqs = [
         v2 ~ R2*i2 + vc
         v1 ~ R1*i1 + vc
         D(vc) ~ i3/C
-        
-        
-        # v ~ r1.p.v - r1.n.v
-        # connect(oneport.p, r1.p),
-        # connect(oneport.n, r2.n)
-        # i ~ r1.p.i
         ]
     extend(ODESystem(wall_eqs, t, [], pars; name = name), threeport)   
 end
 
-## Traversing the graph to create the network model
+###
 
+## Traversing the graph to create the network model
 nRooms = nv(buildNetwork);
 nWalls = ne(buildNetwork);
-
-Croom = Array{Float64}(undef, nRooms)
-Cwall = Array{Float64}(undef, nWalls)
-R1wall = Array{Float64}(undef, nWalls)
-R2wall = Array{Float64}(undef, nWalls)
 
 @named ground = Ground()
 @parameters t
 D = Differential(t)
+R1wall = 1
+R2wall = 1
+Cwall = 1
 
 rooms = vertices(buildNetwork)
+walls = edges(buildNetwork)
+eqs = []
+systemBuild = [ground]
+capacitor_room_array = []
+wall_array = Dict()
+
 for currRoom in rooms
 	currRoomLabel = label_for(buildNetwork, currRoom)
 	print("Entering ")
 	println(currRoomLabel)
 	#println((buildNetwork[currRoomLabel].Volume))
 	if currRoom == 1
-		@named capacitor_room[currRoom] = Capacitor(C = buildNetwork[currRoomLabel].Volume, v_start=2.0)
+		@named capacitor_room = Capacitor(C = buildNetwork[currRoomLabel].Volume, v_start=2.0)
+		push!(capacitor_room_array, capacitor_room)
 	else
-		@named capacitor_room[currRoom] = Capacitor(C = buildNetwork[currRoomLabel].Volume, v_start=1.0)
+		@named capacitor_room = Capacitor(C = buildNetwork[currRoomLabel].Volume, v_start=1.0)
+		push!(capacitor_room_array, capacitor_room)
 	end
+	push!(systemBuild, capacitor_room_array[currRoom])
+	push!(eqs, connect(capacitor_room_array[currRoom].n, ground.g))
 end
-
-walls = edges(buildNetwork)
+	
 for currWall in walls
-	println("Wall between ", label_for(buildNetwork, src(currWall)), " and ", label_for(buildNetwork, dst(currWall)))
+	#println(currWall)
+	sourceRoom = src(currWall)
+	destRoom = dst(currWall)
+	sourceRoomLabel = label_for(buildNetwork, sourceRoom)
+	destRoomLabel = label_for(buildNetwork, destRoom)
+	println("Wall between ", sourceRoomLabel, " and ", destRoomLabel)
+	@named wall = wall_2R1C(; R1 = R1wall, R2 = R2wall, C = Cwall)
+	wall_array[currWall] = wall
+	push!(systemBuild, wall_array[currWall])
+	push!(eqs, connect(wall_array[currWall].n, ground.g))
+	push!(eqs, connect(wall_array[currWall].p1, capacitor_room_array[sourceRoom].p))
+	push!(eqs, connect(wall_array[currWall].p2, capacitor_room_array[destRoom].p))
 end
+#=
+@named buildingThermalModel = ODESystem(eqs, t, systems=systemBuild)
+sys = structural_simplify(buildingThermalModel)
+prob = ODAEProblem(sys, Pair[] , (0, 50.0))
+sol = solve(prob, Tsit5())
+#plot(sol, vars = [capacitor_room.v, capacitor_second_room.v, wall.vc], title = "Single-Layer Wall Model (2R1C) Circuit Demonstration", labels = ["Room Temperature" "Second Room Temperature" "Wall Temperature"])
+=#
