@@ -1,1 +1,84 @@
-<mxfile host="app.diagrams.net" modified="2022-10-14T11:03:51.305Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36" etag="nPwg2sCp0lCIgFQE4g5v" version="20.4.1" type="gitlab"><diagram id="kgpKYQtTHZ0yAKxKKP6v" name="Page-1">7ZjLcpswFIafhmU6RhgbL2Pn0kU6yTSdSbOU4QTUCMQIEeM+fSUQYC5OcGrctNOVpV8XxP/pnMPYsFZhds1xHHxhHlADTbzMsC4MhEyELPmjlK1WTAcVis+Jp7VauCc/QYsTrabEg6QxUTBGBYmbosuiCFzR0DDnbNOc9sRo86kx9qEj3LuYdtUH4omgUB17UuufgfhB+WRzokdCXE7WQhJgj212JOvSsFacMVG0wmwFVLlX+lKsu9ozWh2MQySGLLCidHmV8YW7vZnE0e3DN4Svz/QuL5im+oUN6/x2/UNZWZxabEsr5AvEqpmG9IY8ASWR7C1j4CQEAVyOUC3f1dpSghFYamrczPuU4jgh63zbiVQ4uClPyAt8haTgn6ssjTzwdK8yL+8Izp4rHGpT/RbABWR77TEr0+V1BSYPyLdySnVXNSd9Ux3d3dTUK7bBDnGrFLG+aX61dQ1DNjSPA9igLps2kpiRSOTPtZeGfdHCwbgImM8iTHeBHN/Y/Tdrr9tTu2H2vM/srtfmYiyvrY7XHkliLNyg47kyg8gEcU6JH0lpzYRgYe4e5uJc5RzlvdxKahB5pbKmzH0up+lE5wwlAF4nTQ3xXyZLzH14bR7q58SBYiFjsplQe2zXS+/UTaz5npn9gMsdEpZyF/SiFrvqFO/HOf2HQ8du5qkqb70RO85YoWP/LyFZqxR8mBIy+6vjwD6khPSa3VNCZmN5Pe94zUGkPBpeQHaKBYtBDi09nAS5z2YxvFM2ICPiuzZdtR9V+9PCfndFKVLy25dpWEUZFDe/WWTQvHkFkDVrblEcdbQq4xzho6HnA0G6xrcVWtV5PCTSDgeLBoKd/SmwnaAd+fNh0QEr0dE1lniOAtY8EdihETs9Gdhps0KiduUbGWxZEU6dpM2TJenph4vlNnJ7fqQkLbv1vyfF9PpPKOvyFw==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2022-10-14T11:37:29.289Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36" etag="0hmceXPNdXwRW_hCrVqb" version="20.4.1" type="gitlab">
+  <diagram id="kgpKYQtTHZ0yAKxKKP6v" name="Page-1">
+    <mxGraphModel dx="1051" dy="682" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="DNGEv35lqQt7DtbdXW2g-1" target="DNGEv35lqQt7DtbdXW2g-35">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="572" y="220" />
+              <mxPoint x="572" y="307" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-1" value="Recognition of rooms, walls of building plan&lt;br&gt;through ML algorithm" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="262" y="190" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-4" value="&lt;h1 style=&quot;&quot;&gt;Energy++&lt;/h1&gt;&lt;h1&gt;&amp;nbsp;Milestone 1 demo workflow&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;align=center;" vertex="1" parent="1">
+          <mxGeometry x="200" y="50" width="430" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="DNGEv35lqQt7DtbdXW2g-10" target="DNGEv35lqQt7DtbdXW2g-39">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="572" y="400" />
+              <mxPoint x="572" y="485" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-10" value="Generator of data structure representing connections between rooms" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="262" y="370" width="240" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-47" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="DNGEv35lqQt7DtbdXW2g-13" target="DNGEv35lqQt7DtbdXW2g-46">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-13" value="Grey-box model builder:&lt;br&gt;Inspect data structure and build complex RC circuit&lt;br&gt;Simulate resulting circuit and produce parameters" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="227" y="560" width="320" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-20" value="Output" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="572" y="250" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-25" value="Input" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="132" y="340" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-34" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="DNGEv35lqQt7DtbdXW2g-33" target="DNGEv35lqQt7DtbdXW2g-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-33" value="&lt;b&gt;Input: building plan&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="62" y="190" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="DNGEv35lqQt7DtbdXW2g-35" target="DNGEv35lqQt7DtbdXW2g-10">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="192" y="300" />
+              <mxPoint x="192" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-35" value="Coordinates of rooms in the building plan" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="312" y="275" width="140" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="DNGEv35lqQt7DtbdXW2g-39" target="DNGEv35lqQt7DtbdXW2g-13">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="192" y="485" />
+              <mxPoint x="192" y="590" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-39" value="Data structure&lt;br&gt;Connections between rooms" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="292" y="450" width="190" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-41" value="Output" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="572" y="430" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-43" value="Input" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="132" y="520" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="DNGEv35lqQt7DtbdXW2g-46" value="&lt;b&gt;Output: parameters of PDE&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="617" y="560" width="170" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
