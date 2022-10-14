@@ -85,8 +85,6 @@ print(bb_dataframe)
 # result.pred[0] = new_points
 
 
-# In[8]:
-
 
 # percentage of overlap above which the rooms are considered neighbors
 IOU = 0.2
@@ -201,16 +199,12 @@ for i in range(len(temp)):
                     if intersection>IOU:   
                             connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
                             connectivity[entity_labels[i]]["wall"].append(overlap/x_factor)
+# Rendering the image with bounding boxes
 
-with open("connectivity.json","w+") as f:
-    json.dump(connectivity,f)
-j = julia.Julia(compiled_modules=False)
-x = j.include("Graph/firstGraph.jl")
-# Rendering the image with bounding boxes
-# Rendering the image with bounding boxes
 result.render(labels=True)
 result.save(labels=True, save_dir="./")
 os.system("cp './.2/image0.jpg' image0.jpg")
+os.system("rm -rf ./.2")
 image = PIL.Image.open("image0.jpg")
 draw  = PIL.ImageDraw.Draw(image)
 font  = PIL.ImageFont.truetype("arial.ttf", 50, encoding="unic")
@@ -221,4 +215,11 @@ for text, coordinates in zip(entity_labels, centers):
 draw.text([1,5000],str(connectivity), font=font, fill="#0000FF")
 image.save("image0.png","png")
 display(PIL.Image.open("image0.png"))
-print(connectivity)
+
+# Writing connnectivity into json file
+
+with open("connectivity.json","w+") as f:
+    json.dump(connectivity,f)
+print("GRAPH WRITTEN TO JSON file")
+j = julia.Julia(compiled_modules=False)
+x = j.include("Graph/firstGraph.jl")
