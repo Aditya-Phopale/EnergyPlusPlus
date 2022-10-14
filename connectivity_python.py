@@ -204,7 +204,7 @@ for i in range(len(temp)):
 result.render(labels=True)
 result.save(labels=True, save_dir="./")
 os.system("cp './.2/image0.jpg' image0.jpg")
-os.system("rm -rf ./.2")
+os.system("sudo rm -rf ./.2")
 image = PIL.Image.open("image0.jpg")
 draw  = PIL.ImageDraw.Draw(image)
 font  = PIL.ImageFont.truetype("arial.ttf", 50, encoding="unic")
