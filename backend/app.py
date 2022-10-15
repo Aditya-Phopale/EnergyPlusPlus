@@ -4,6 +4,9 @@ from flask import Flask, request
 import flask
 import json
 from flask_cors import CORS
+
+import time
+
 import julia    #https://stackoverflow.com/questions/49750067/running-julia-jl-file-in-python
 
 import matplotlib.pyplot as plt
@@ -34,14 +37,14 @@ def callback():
 @app.route('/rooms', methods=["GET"])
 def callback_rooms():
     print("user endpoint rooms reached...")
-    if request.method == "GET":
-        print("GET request worked")
-        
+    if request.method == "GET":    
+        time.sleep(2.5)
         return_data = {
+            #TODO: include yolov5 
             # picture generation from yolo converted to msg
             "status":"success"
         }
-
+        print("GET request finished")
         return flask.Response(response=return_data, status=201)
 
 @app.route('/rc', methods=["GET"])
@@ -49,7 +52,9 @@ def callback_rc():
     print("user endpoint rc reached...")
     if request.method == "GET":
         # execute julia -> plot.png is updated 
-        print("GET request went through")
+        # TODO: make it work 
+        time.sleep(2.5)
+        
         j = julia.Julia()
         j.include("./2R1C_simulation/wall_function.jl")
         print("execution of julia finished")
@@ -59,7 +64,7 @@ def callback_rc():
             # picture generation from rc converted to msg
             "status":"success"
         }
-
+        print("GET request finished")
         return flask.Response(response=return_data, status=201)
 
 if __name__ == "__main__":

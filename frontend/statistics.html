@@ -21,9 +21,17 @@
 
   <div class="main">
     <p>Here is the result of the thermal modelling.</p>
-    <!-- add listening id with rc model showing -->
-    <button onclick="requestRC()">Show Rooms result</button>
-    <script src="image_handler.js"></script>
   </div>
+  <!-- add listening id with rc model showing -->
+  <script src="image_handler.js"></script>
+  <!-- always call requesRC() when opening this page -->
+  <script>
+    requestRC();
+    // TODO: add some kind of wait for the update
+    show_image('../backend/2R1C_simulation/plot.png', 
+                500, 
+                400, 
+                'The result of the modelling');
+  </script>
   </body>
 </html>

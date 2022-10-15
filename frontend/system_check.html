@@ -27,9 +27,16 @@
   <input type="file" id="image-input" accept="image/jpeg, image/png, image/jpg">
   <p></p>
   <div id="display-image"></div>
-  <script src="image_handler.js"></script>
   <p></p>
-  <button onclick="approvePlan()">Approve</button>
-  <button class="next-page-button" onclick="location.href='verification.html';">Go to verification</button>
+
+  <button onclick="approvePlan()">Upload picture</button>
+
+  <script src="image_handler.js"></script>
+
+  <div id="next-page-button">
+    <button class="next-page-button" onclick="switch_to_page('verification.html')"> Start Detection </button>
+  </div>
+
+
   </body>
 </html>

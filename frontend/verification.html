@@ -24,9 +24,18 @@
     <!-- add listening id with floor plan display -->
    
   </div>
-  <button onclick="requestRooms()">Show Rooms result</button>
+  
   <script src="image_handler.js"></script>
-  <button class="next-page-button" onclick="location.href='statistics.html';">Go to the statistics</button>
+  <!-- always calling requestRooms() when opening verification.html  -->
+  <script>
+    requestRooms();
+    // TODO: add some kind of wait for the update
+    show_image('floorplan_test.png', 
+                 800, 
+                 700, 
+                 'The detected rooms of the building plan');
+  </script>
+  <button class="next-page-button" onclick="requestRC(); location.href='statistics.html';">Go to the statistics</button>
 
   </body>
 </html>
