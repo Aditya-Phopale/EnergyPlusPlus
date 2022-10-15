@@ -10,18 +10,19 @@
 
   <div class="header">
     <h1>Energy++</h1>
-    <p>Creating better future.</p>
+    <p>Creating a better future.</p>
   </div>
 
   <div class="navbar">
     <a href="system_check.html">System check</a>
+    <a href="idea.html">Idea</a>
     <a href="advice.html">Get advice</a>
     <a href="authors.html">Authors</a>
   </div>
 
   <!-- https://medium.com/@codefoxx/how-to-upload-and-preview-an-image-with-javascript-749b92711b91 -->
   <div class="main">
-    <p>Upload a building plan to auto generate a model.​</p>
+    <p>Upload your <b>building plan</b> to auto generate a model:​</p>
   </div>
 
   <input type="file" id="image-input" accept="image/jpeg, image/png, image/jpg">
@@ -29,14 +30,9 @@
   <div id="display-image"></div>
   <p></p>
 
-  <button onclick="approvePlan()">Upload picture</button>
-
   <script src="image_handler.js"></script>
-
-  <div id="next-page-button">
-    <button class="next-page-button" onclick="switch_to_page('verification.html')"> Start Detection </button>
-  </div>
-
-
+  <button onclick="approvePlan()">Preprocess</button>
+  <button class="next-page-button" onclick="switch_to_page('verification.html')"> Start Detection </button>
+  
   </body>
 </html>

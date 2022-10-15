@@ -10,17 +10,18 @@
 
   <div class="header">
     <h1>Energy++</h1>
-    <p>Creating better future.</p>
+    <p>Creating a better future.</p>
   </div>
 
   <div class="navbar">
     <a href="system_check.html">System check</a>
+    <a href="idea.html">Idea</a>
     <a href="advice.html">Get advice</a>
     <a href="authors.html">Authors</a>
   </div>
-
+  
   <div class="main">
-    <p>Here you can see the detected rooms.</p>
+    <p>Here you can see the detected rooms of the building plan:</p>
     <!-- add listening id with floor plan display -->
    
   </div>
@@ -30,11 +31,12 @@
   <script>
     requestRooms();
     // TODO: add some kind of wait for the update
-    show_image('floorplan_test.png', 
-                 800, 
-                 700, 
+    show_image('../images/labels_cropped.png', 
+                 300, 
+                 400, 
                  'The detected rooms of the building plan');
   </script>
+  <p></p>
   <button class="next-page-button" onclick="requestRC(); location.href='statistics.html';">Go to the statistics</button>
 
   </body>

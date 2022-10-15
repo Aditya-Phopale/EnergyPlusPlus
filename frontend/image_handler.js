@@ -23,7 +23,6 @@ image_input.addEventListener("change", function() {
   reader.readAsDataURL(this.files[0]);
 });
 
-
 // // show the image from yolov5
 // floor_plan_button.addEventListener("click", function() {
 //   // this element is supposed to first call requestRooms
