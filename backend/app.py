@@ -9,7 +9,6 @@ import julia    #https://stackoverflow.com/questions/49750067/running-julia-jl-f
 import matplotlib.pyplot as plt
 import detection_tools as dt
 
-j = julia.Julia()
 app = Flask(__name__)
 CORS(app)
 
@@ -36,6 +35,7 @@ def callback():
 def callback_rooms():
     print("user endpoint rooms reached...")
     if request.method == "GET":
+        print("GET request worked")
         
         return_data = {
             # picture generation from yolo converted to msg
@@ -49,6 +49,8 @@ def callback_rc():
     print("user endpoint rc reached...")
     if request.method == "GET":
         # execute julia -> plot.png is updated 
+        print("GET request went through")
+        j = julia.Julia()
         j.include("./2R1C_simulation/wall_function.jl")
         print("execution of julia finished")
 

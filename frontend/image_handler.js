@@ -1,5 +1,8 @@
 const image_input = document.querySelector("#image-input");
 // const floor_plan = 
+const floor_plan_button = document.querySelector("button");
+const rc_output_button = document.querySelector("button");
+
 // const rc_output = 
 
 var xhr = null;
@@ -26,7 +29,7 @@ image_input.addEventListener("change", function() {
 
 
 // show the image from yolov5
-floor_plan.addEventListener("", function() {
+floor_plan_button.addEventListener("click", function() {
   // this element is supposed to first call requestRooms
 
   // and then listen to ACK, from which retrieve the image 
@@ -35,7 +38,7 @@ floor_plan.addEventListener("", function() {
 });
 
 // show the resut from RC
-rc_output.addEventListener("", function() {
+rc_output_button.addEventListener("click", function() {
   // this element is supposed to first call requestRC
   // and then listen to ACK, from which retrieve the image 
   // and plot it
