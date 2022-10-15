@@ -241,4 +241,5 @@ prob = ODAEProblem(sys, Pair[] , (0, 50.0))
 sol = solve(prob, Tsit5())
 
 println("Executed successfully")
-plot(sol, vars = [capacitor_room_01], title = "Mockup Model", labels = ["Room Temperature"])
+plot(sol, vars = [capacitor_room_1.v], title = "Mockup Model", labels = ["Room Temperature"])
+savefig("Prototype_Model_Simple.png")
