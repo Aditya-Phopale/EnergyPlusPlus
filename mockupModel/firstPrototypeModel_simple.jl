@@ -246,7 +246,7 @@ savefig("mockUpModelPlot.png")
 
 using GraphPlot, Colors
 nodefillc = distinguishable_colors(nv(g), colorant"blue")
-nodelabel = 1:nv(buildNetwork)
+nodelabel = 0:nv(buildNetwork)-1
 gplot(buildNetwork, nodelabel=nodelabel, nodefillc=nodefillc)
 
 #using StatsPlots
