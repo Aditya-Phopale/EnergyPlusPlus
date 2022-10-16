@@ -115,7 +115,7 @@ D = Differential(t)
 R1wall = 1
 R2wall = 1
 Cwall = 1
-counter = 0
+counter = 1
 rooms = vertices(buildNetwork)
 walls = edges(buildNetwork)
 eqs = []
@@ -146,6 +146,9 @@ end
 
 wall_room = MutableLinkedList{Any}()
 
+# This string gives unique name to connections - has to be as long as there are connections in our graph
+##TODO: Find a way to add variable length strings to the @named entity
+temp_string = "abcdefghijklmnopqrstuvwxyz1234567890"
 # define Resistance for walls 
 for (key, value) in connectivity
     itr = 1
@@ -157,7 +160,7 @@ for (key, value) in connectivity
             first_room_n = (parse(Int, first_room) + 1)
             second_room_n = (parse(Int, second_room) + 1)
             global counter
-            temp_name = string(counter)
+            temp_name = string(temp_string[counter])
             z = @named wall_room[collect(temp_name)] = wall_2R1C(; R1 = R1wall, R2 = R2wall, C = Cwall)
             push!(systemBuild, z[1])
             push!(eqs, connect(z[1].n, ground.g))
