@@ -238,8 +238,16 @@ push!(eqs, connect(wall_40.p2, capacitor_room_0.p))
 @named buildingThermalModel = ODESystem(eqs, t, systems=systemBuild)
 sys = structural_simplify(buildingThermalModel)
 prob = ODAEProblem(sys, Pair[] , (0, 50.0))
-sol = solve(prob, Tsit5())
+sol = solve(prob, Tsit5())  
 
 println("Executed successfully")
-plot(sol, vars = [capacitor_room_1.v], title = "Mockup Model", labels = ["Room Temperature"])
-savefig("Prototype_Model_Simple.png")
+plot(sol, vars = [capacitor_room_0.v, capacitor_room_1.v, capacitor_room_2.v, capacitor_room_3.v, capacitor_room_4.v], title = "Mockup Model", labels = ["Room 0 Temperature" "Room 1 Temperature" "Room 2 Temperature" "Room 3 Temperature" "Room 4 Temperature"], lw = 3)
+savefig("mockUpModelPlot.png")
+
+using GraphPlot, Colors
+nodefillc = distinguishable_colors(nv(g), colorant"blue")
+nodelabel = 1:nv(buildNetwork)
+gplot(buildNetwork, nodelabel=nodelabel, nodefillc=nodefillc)
+
+#using StatsPlots
+#violin(["Room 0 Temperature" "Room 1 Temperature" "Room 2 Temperature" "Room 3 Temperature" "Room 4 Temperature"], [capacitor_room_0.v capacitor_room_1.v capacitor_room_2.v capacitor_room_3.v capacitor_room_4.v], leg=false)
