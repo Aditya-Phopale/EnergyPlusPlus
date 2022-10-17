@@ -17,8 +17,9 @@ function show_image(src, width, height, alt) {
   img.height = height;
   img.alt = alt;
 
+  var br = document.createElement("br");
   // This next line will just add it to the <body> tag
-  document.body.appendChild(img);
+  document.body.append(img, br);
 }
 
 function switch_to_page(src){
