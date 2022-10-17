@@ -27,7 +27,7 @@ def callback():
             "status": "success"
         }
         print("before conversion")
-        #TODO: make the conversion work and print it back
+        #TODO: make the conversion work and maybe print it back
         floor_plan = dt.msg_to_png(received_data)
         print("after conversion")
         rooms_image, labels = dt.detect_rooms(floor_plan)
@@ -52,11 +52,11 @@ def callback_rc():
     print("user endpoint rc reached...")
     if request.method == "GET":
         # execute julia -> plot.png is updated 
-        # TODO: make it work 
+        # TODO: make julia work 
         time.sleep(2.5)
         
-        j = julia.Julia()
-        j.include("./2R1C_simulation/wall_function.jl")
+        # j = julia.Julia()
+        # j.include("./2R1C_simulation/wall_function.jl")
         print("execution of julia finished")
 
         # return the results to frontend 

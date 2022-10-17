@@ -26,18 +26,19 @@
    
   </div>
   
-  <script src="image_handler.js"></script>
+  <script src="scripts/Rooms_request.js"></script>
+  <script src="scripts/header.js"></script>
+
+  <!-- this is needed to link the show_picture_waiting function to sth -->
+  <div id ="loader_link"></div>
+
   <!-- always calling requestRooms() when opening verification.html  -->
   <script>
     requestRooms();
-    // TODO: add some kind of wait for the update
-    show_image('../images/labels_cropped.png', 
-                 300, 
-                 400, 
-                 'The detected rooms of the building plan');
-  </script>
-  <p></p>
-  <button class="next-page-button" onclick="requestRC(); location.href='statistics.html';">Go to the statistics</button>
+    show_picture_waiting('../images/labels_cropped.png', 300, 400);
 
+  </script>
+  <button class="next-page-button" onclick="show_image('../images/connectivity.png', 500,300, 'shows which rooms are connected');">Show connectivity</button>
+  <button class="next-page-button" onclick="location.href='statistics.html';">Go to the statistics</button>
   </body>
 </html>

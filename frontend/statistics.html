@@ -24,15 +24,16 @@
     <p>Here is the result of the thermal modelling.</p>
   </div>
   <!-- add listening id with rc model showing -->
-  <script src="image_handler.js"></script>
+  <script src="./scripts/header.js"></script>
+  <script src="./scripts/RC_request.js"></script>
+
+  <!-- this is needed to link the show_picture_waiting function to sth -->
+  <div id ="loader_link"></div>
+
   <!-- always call requesRC() when opening this page -->
   <script>
-    requestRC();
-    // TODO: add some kind of wait for the update
-    show_image('../backend/2R1C_simulation/plot.png', 
-                500, 
-                400, 
-                'The result of the modelling');
+  requestRC();
+  show_picture_waiting('../images/mockUpModelPlot.png', 550, 400);
   </script>
   </body>
 </html>
