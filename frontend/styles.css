@@ -104,3 +104,11 @@
     width: 100%;
   }
 }
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 20%;
+  width: 20%;
+}
