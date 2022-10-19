@@ -3,7 +3,13 @@
 Optimizing energy for building infrastructure  
 BGCE class 22-23' honours project  
 
+*Little science with a lot of selling*  
+
 -- some description goes here --  
+
+#### How to run web wrapping  
+To test web staff, first do `pip install flask flask-cors` either in virtual env, or locally  
+Open frontend/index.html with a web browser, then run backend/app.py  
 
 ---
 
