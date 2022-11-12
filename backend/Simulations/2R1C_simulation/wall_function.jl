@@ -7,16 +7,19 @@ R2 = 0.55
 C = 4704000
 Croom = 60025
 C_second_room = 10000000000000.0
-Vin2 = 283.0
+V = 283.0
 V_heating = 293.0
-proportional_const = 500
+proportional_const = 60
 
 # @named capacitor_room = Capacitor(C=Croom, v_start=Vin1)
-@named capacitor_second_room = Capacitor(C=C_second_room, v_start=Vin2)
+# @named capacitor_second_room = Capacitor(C=C_second_room, v_start=Vin2)
 @named ground = Ground()
 
-@parameters t
+@variables t
 D = Differential(t)
+
+@named source = Voltage()
+@named constant = Constant(k=V)
 
 function ThreePort(; name, v1_start = 0.0, v2_start = 0.0, i1_start = 0.0, i2_start = 0.0, i3_start = 0.0, v_wall_start = 283.0)
     @named p1 = Pin()
@@ -99,23 +102,29 @@ function wall_2R1C(; name, R1, R2, C)
 
 end
 
-@named wall = wall_2R1C(; R1, R2, C)
+@named wall1 = wall_2R1C(; R1, R2, C)
+@named wall2 = wall_2R1C(; R1, R2, C)
+@named wall3 = wall_2R1C(; R1, R2, C)
+@named wall4 = wall_2R1C(; R1, R2, C)
 @named room = Room_component(; Croom, V_heating, proportional_const)
 
 eqs = [
-    connect(room.p, wall.p1)
-    connect(capacitor_second_room.p, wall.p2)
-    connect(room.n1, room.n2, capacitor_second_room.n, wall.n, ground.g)
+    connect(room.p, wall1.p1, wall2.p1, wall3.p1, wall4.p1)
+    connect(constant.output, source.V)
+    # connect(capacitor_second_room.p, wall.p2)
+    connect(source.p, wall1.p2, wall2.p2, wall3.p2, wall4.p2)
+    # connect(room.n1, room.n2, capacitor_second_room.n, wall.n, ground.g)
+    connect(room.n1, room.n2, source.n, wall1.n, wall2.n, wall3.n, wall4.n, ground.g)
     #connect(capacitor_room.n, wall.p2, wall.n, ground.g)
     ]
 
 
-@named single_layer_wall_model = ODESystem(eqs, t, systems=[wall, room, capacitor_second_room, ground])
+@named single_layer_wall_model = ODESystem(eqs, t, systems=[wall1, wall2, wall3, wall4, room, source, constant, ground])
 sys = structural_simplify(single_layer_wall_model)
-prob = ODAEProblem(sys, Pair[] , (0, 1000.0))
+prob = ODAEProblem(sys, Pair[] , (0, 100000.0))
 sol = solve(prob, Tsit5())
 #plot(sol, vars = capacitor_room.v, title = "Single-Layer Wall Model (2R1C) Circuit Demonstration", labels = ["Room Temperature"])
-plot(sol, vars = [room.v1, capacitor_second_room.v, wall.vc], title = "Single-Layer Wall Model (2R1C) Circuit Demonstration", labels = ["Room Temperature" "Second Room Temperature" "Wall Temperature"])
+plot(sol, vars = [room.v1, wall1.vc], title = "Single-Layer Wall Model (2R1C) Circuit Demonstration", labels = ["Room Temperature" "Wall Temperature"])
 #plot(sol, vars = [capacitor_room.v, wall.vc], title = "Single-Layer Wall Model (2R1C) Circuit Demonstration", labels = ["Room Temperature" "Wall Temperature"])
 
 savefig("plot.png")
