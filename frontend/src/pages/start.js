@@ -8,7 +8,7 @@ const Start = () => (
   <Layout>
     <div className="container text-center my-5">
       <h1> Start</h1>
-      <p> To start the process and save enrgey upload the image of your floorplan here</p>
+      <p> To start the process and save energy, upload the image of your floorplan here.</p>
       <Link to="/">Go back to the homepage</Link>
     </div>
   </Layout>

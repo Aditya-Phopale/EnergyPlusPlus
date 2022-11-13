@@ -9,21 +9,18 @@ const AboutPage = () => (
   <Layout>
     <div className="container  my-5">
 
-      <div className="container">
-        <h1 >Do you want to save energy?</h1>
-        
+      <div className="container my-5">
+        <h1>Do you want to save energy?</h1>
         <p><b>Saving energy</b> is a very important topic, especially in this energy crisis and with climate change. It also very helpful to save money. 
-         Apart from using our product there are many ways to further save energy. Here we collected a few resources and advices to inspire you:
-        </p> 
-        <p>
+         Apart from using our product there are many ways to further save energy. Here we collected a few resources and advices to inspire you:</p> 
         <u1>
-           <li> <a href="https://www.energysage.com/energy-efficiency/101/ways-to-save-energy/">Energysage</a> </li>  
-           <li> <a href="https://energysavingtrust.org.uk/hub/quick-tips-to-save-energy/">Energy saving trust</a>  </li>
+            <li> <a href="https://www.energysage.com/energy-efficiency/101/ways-to-save-energy/">Energysage</a> </li>  
+            <li> <a href="https://energysavingtrust.org.uk/hub/quick-tips-to-save-energy/">Energy saving trust</a>  </li>
         </u1> 
-        </p>
-        Our product provides an automatic optimized control of your heating system. <Link to="/">Go back to the homepage</Link> to get started!
-
+        <p></p>
+        <p>Our product provides an automatic optimized control of your heating system. Go back to the <Link to="/">homepage</Link> to get started!</p>
       </div>
+      
       <div className="container text-center my-5">
           <StaticImage
             src="../images/icon.png"
@@ -36,7 +33,7 @@ const AboutPage = () => (
       </div>
 
 
-      <div className="container">
+      <div className="container my-5">
         <h1 >This is our solution</h1>
         
           <p>Operations efficiency could be significantly improved by robust control algorithms. 
@@ -57,10 +54,10 @@ const AboutPage = () => (
           />
       </div>
 
-      <div className="container">
+      <div className="container my-5">
         <h1 >... and this is our team!</h1>
         
-        <p>The project is a collaboration of <a href="https://www.siemens.com/de/de.html">Siemens AG</a> and <a href="https://www.bgce.de/">TUM BGCE</a> program. We are a group of students from the <a href="https://www.tum.de">Technical University of Munich</a>, who study Computational Science and Engineering.</p>
+        <p>The project is a collaboration of <a href="https://www.siemens.com/de/de.html">Siemens AG</a> and the <a href="https://www.bgce.de/">TUM BGCE</a> program. We are a group of students from the <a href="https://www.tum.de">Technical University of Munich</a>, who study <a href = "https://www.tum.de/en/studies/degree-programs/detail/computational-science-and-engineering-cse-master-of-science-msc"> Computational Science and Engineering.</a></p>
         <h3>Student Team:</h3>
         <ul>
           <li>Aditya Phopale</li>
