@@ -17,7 +17,7 @@ const IndexPage = () => (
             width={300}
             quality={95}
             formats={["AUTO", "WEBP"]}
-            alt="A Gatsby astronaut"
+            alt="icon"
             className="img-fluid"
           />
 

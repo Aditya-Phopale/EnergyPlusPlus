@@ -8,6 +8,8 @@ exports.components = {
   "component---src-pages-404-js": preferDefault(require("/home/meike/LRZ Sync+Share/Master-CSE/BGCE/Project/energyplusplus/frontend/src/pages/404.js")),
   "component---src-pages-about-js": preferDefault(require("/home/meike/LRZ Sync+Share/Master-CSE/BGCE/Project/energyplusplus/frontend/src/pages/about.js")),
   "component---src-pages-index-js": preferDefault(require("/home/meike/LRZ Sync+Share/Master-CSE/BGCE/Project/energyplusplus/frontend/src/pages/index.js")),
-  "component---src-pages-start-js": preferDefault(require("/home/meike/LRZ Sync+Share/Master-CSE/BGCE/Project/energyplusplus/frontend/src/pages/start.js"))
+  "component---src-pages-model-js": preferDefault(require("/home/meike/LRZ Sync+Share/Master-CSE/BGCE/Project/energyplusplus/frontend/src/pages/model.js")),
+  "component---src-pages-start-js": preferDefault(require("/home/meike/LRZ Sync+Share/Master-CSE/BGCE/Project/energyplusplus/frontend/src/pages/start.js")),
+  "component---src-pages-verification-js": preferDefault(require("/home/meike/LRZ Sync+Share/Master-CSE/BGCE/Project/energyplusplus/frontend/src/pages/verification.js"))
 }
 

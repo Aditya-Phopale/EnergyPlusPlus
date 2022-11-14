@@ -26,10 +26,10 @@ const Verification = () => (
       <p> Here is a result for the recognition of the rooms of your building:</p>
       <StaticImage
             src="../images/labels_cropped.png"
-            width={300}
+            width={500}
             quality={95}
             formats={["AUTO", "WEBP"]}
-            alt="A Gatsby astronaut"
+            alt="labeled floor plan"
             className="img-fluid"
           />
 
@@ -42,7 +42,7 @@ const Verification = () => (
 
 )
 
-export default Start
+export default Verification
 
 
 

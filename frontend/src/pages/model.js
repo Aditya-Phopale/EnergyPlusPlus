@@ -26,7 +26,7 @@ const Model = () => (
       <p> Here is a simulation of your model!</p>
       <StaticImage
             src="../images/mockUpModelPlot.png"
-            width={300}
+            width={500}
             quality={95}
             formats={["AUTO", "WEBP"]}
             alt="A Gatsby astronaut"
@@ -41,7 +41,7 @@ const Model = () => (
 
 )
 
-export default Start
+export default Model
 
 
 

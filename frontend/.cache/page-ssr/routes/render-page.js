@@ -1870,7 +1870,9 @@ exports.components = {
   "component---src-pages-404-js": () => __webpack_require__.e(/*! import() | component---src-pages-404-js */ "component---src-pages-404-js").then(__webpack_require__.bind(__webpack_require__, /*! ./../../../src/pages/404.js?export=default */ "./src/pages/404.js?export=default")),
   "component---src-pages-about-js": () => __webpack_require__.e(/*! import() | component---src-pages-about-js */ "component---src-pages-about-js").then(__webpack_require__.bind(__webpack_require__, /*! ./../../../src/pages/about.js?export=default */ "./src/pages/about.js?export=default")),
   "component---src-pages-index-js": () => __webpack_require__.e(/*! import() | component---src-pages-index-js */ "component---src-pages-index-js").then(__webpack_require__.bind(__webpack_require__, /*! ./../../../src/pages/index.js?export=default */ "./src/pages/index.js?export=default")),
-  "component---src-pages-start-js": () => __webpack_require__.e(/*! import() | component---src-pages-start-js */ "component---src-pages-start-js").then(__webpack_require__.bind(__webpack_require__, /*! ./../../../src/pages/start.js?export=default */ "./src/pages/start.js?export=default"))
+  "component---src-pages-model-js": () => __webpack_require__.e(/*! import() | component---src-pages-model-js */ "component---src-pages-model-js").then(__webpack_require__.bind(__webpack_require__, /*! ./../../../src/pages/model.js?export=default */ "./src/pages/model.js?export=default")),
+  "component---src-pages-start-js": () => __webpack_require__.e(/*! import() | component---src-pages-start-js */ "component---src-pages-start-js").then(__webpack_require__.bind(__webpack_require__, /*! ./../../../src/pages/start.js?export=default */ "./src/pages/start.js?export=default")),
+  "component---src-pages-verification-js": () => __webpack_require__.e(/*! import() | component---src-pages-verification-js */ "component---src-pages-verification-js").then(__webpack_require__.bind(__webpack_require__, /*! ./../../../src/pages/verification.js?export=default */ "./src/pages/verification.js?export=default"))
 };
 
 exports.head = {
@@ -1878,7 +1880,9 @@ exports.head = {
   "component---src-pages-404-js": () => __webpack_require__.e(/*! import() | component---src-pages-404-jshead */ "component---src-pages-404-jshead").then(__webpack_require__.bind(__webpack_require__, /*! ./../../../src/pages/404.js?export=head */ "./src/pages/404.js?export=head")),
   "component---src-pages-about-js": () => __webpack_require__.e(/*! import() | component---src-pages-about-jshead */ "component---src-pages-about-jshead").then(__webpack_require__.bind(__webpack_require__, /*! ./../../../src/pages/about.js?export=head */ "./src/pages/about.js?export=head")),
   "component---src-pages-index-js": () => __webpack_require__.e(/*! import() | component---src-pages-index-jshead */ "component---src-pages-index-jshead").then(__webpack_require__.bind(__webpack_require__, /*! ./../../../src/pages/index.js?export=head */ "./src/pages/index.js?export=head")),
-  "component---src-pages-start-js": () => __webpack_require__.e(/*! import() | component---src-pages-start-jshead */ "component---src-pages-start-jshead").then(__webpack_require__.bind(__webpack_require__, /*! ./../../../src/pages/start.js?export=head */ "./src/pages/start.js?export=head"))
+  "component---src-pages-model-js": () => __webpack_require__.e(/*! import() | component---src-pages-model-jshead */ "component---src-pages-model-jshead").then(__webpack_require__.bind(__webpack_require__, /*! ./../../../src/pages/model.js?export=head */ "./src/pages/model.js?export=head")),
+  "component---src-pages-start-js": () => __webpack_require__.e(/*! import() | component---src-pages-start-jshead */ "component---src-pages-start-jshead").then(__webpack_require__.bind(__webpack_require__, /*! ./../../../src/pages/start.js?export=head */ "./src/pages/start.js?export=head")),
+  "component---src-pages-verification-js": () => __webpack_require__.e(/*! import() | component---src-pages-verification-jshead */ "component---src-pages-verification-jshead").then(__webpack_require__.bind(__webpack_require__, /*! ./../../../src/pages/verification.js?export=head */ "./src/pages/verification.js?export=head"))
 };
 
 /***/ }),
@@ -1912,13 +1916,13 @@ var plugins = [{
     "background_color": "#663399",
     "theme_color": "#007bc6",
     "display": "standalone",
-    "icon": "src/images/icon.png",
+    "icon": "src/images/icon_new.png",
     "legacy": true,
     "theme_color_in_head": true,
     "cache_busting_mode": "query",
     "crossOrigin": "anonymous",
     "include_favicon": true,
-    "cacheDigest": "d0a8454a6c33a24b4aa9c09b66f46e53"
+    "cacheDigest": null
   }
 }, {
   name: 'gatsby-plugin-gatsby-cloud',
