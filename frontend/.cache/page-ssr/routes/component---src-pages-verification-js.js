@@ -970,11 +970,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function show_image(src, width, height, alt) {
+function show_image(src, alt) {
   var img = document.createElement("img");
   img.src = src;
-  img.width = width;
-  img.height = height;
   img.alt = alt;
   var br = document.createElement("br");
   // This next line will just add it to the <body> tag
@@ -984,12 +982,12 @@ const Verification = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.creat
   className: "container text-center my-5"
 }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("h1", null, " Bounding Boxes"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", null, " Here is a result for the recognition of the rooms of your building:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(gatsby_plugin_image__WEBPACK_IMPORTED_MODULE_4__.StaticImage, {
   src: "../images/labels_cropped.png",
-  width: 300,
+  width: 500,
   quality: 95,
   formats: ["AUTO", "WEBP"],
-  alt: "A Gatsby astronaut",
+  alt: "labeled floor plan",
   className: "img-fluid",
-  __imageData: __webpack_require__(/*! ./.cache/caches/gatsby-plugin-image/2507434297.json */ "./.cache/caches/gatsby-plugin-image/2507434297.json")
+  __imageData: __webpack_require__(/*! ./.cache/caches/gatsby-plugin-image/619345843.json */ "./.cache/caches/gatsby-plugin-image/619345843.json")
 }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
   className: "row"
 }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(gatsby__WEBPACK_IMPORTED_MODULE_1__.Link, {
@@ -997,9 +995,9 @@ const Verification = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.creat
   className: "btn btn-primary my-2"
 }, "Create my thermal model"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
   class: "next-page-button",
-  onclick: "show_image('../images/graph.svg', 500,300, 'shows which rooms are connected');"
+  onclick: show_image('../images/icon.png', "show connectivity")
 }, "Show connectivity"))));
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Start);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Verification);
 const Head = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_seo__WEBPACK_IMPORTED_MODULE_3__.Seo, {
   title: "Verification"
 });
@@ -1016,14 +1014,14 @@ const Head = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement
 
 /***/ }),
 
-/***/ "./.cache/caches/gatsby-plugin-image/2507434297.json":
-/*!***********************************************************!*\
-  !*** ./.cache/caches/gatsby-plugin-image/2507434297.json ***!
-  \***********************************************************/
+/***/ "./.cache/caches/gatsby-plugin-image/619345843.json":
+/*!**********************************************************!*\
+  !*** ./.cache/caches/gatsby-plugin-image/619345843.json ***!
+  \**********************************************************/
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"layout":"constrained","backgroundColor":"#f8f8f8","images":{"fallback":{"src":"/static/f0c75428f863135c7c051c7f7e0786c3/76be9/labels_cropped.png","srcSet":"/static/f0c75428f863135c7c051c7f7e0786c3/fdc1f/labels_cropped.png 75w,\\n/static/f0c75428f863135c7c051c7f7e0786c3/73535/labels_cropped.png 150w,\\n/static/f0c75428f863135c7c051c7f7e0786c3/76be9/labels_cropped.png 300w,\\n/static/f0c75428f863135c7c051c7f7e0786c3/7e93e/labels_cropped.png 600w","sizes":"(min-width: 300px) 300px, 100vw"},"sources":[{"srcSet":"/static/f0c75428f863135c7c051c7f7e0786c3/c9634/labels_cropped.webp 75w,\\n/static/f0c75428f863135c7c051c7f7e0786c3/33a01/labels_cropped.webp 150w,\\n/static/f0c75428f863135c7c051c7f7e0786c3/c480f/labels_cropped.webp 300w,\\n/static/f0c75428f863135c7c051c7f7e0786c3/acff6/labels_cropped.webp 600w","type":"image/webp","sizes":"(min-width: 300px) 300px, 100vw"}]},"width":300,"height":400}');
+module.exports = JSON.parse('{"layout":"constrained","backgroundColor":"#f8f8f8","images":{"fallback":{"src":"/static/f0c75428f863135c7c051c7f7e0786c3/3cbfc/labels_cropped.png","srcSet":"/static/f0c75428f863135c7c051c7f7e0786c3/57d31/labels_cropped.png 125w,\\n/static/f0c75428f863135c7c051c7f7e0786c3/ded58/labels_cropped.png 250w,\\n/static/f0c75428f863135c7c051c7f7e0786c3/3cbfc/labels_cropped.png 500w,\\n/static/f0c75428f863135c7c051c7f7e0786c3/1cb4b/labels_cropped.png 1000w","sizes":"(min-width: 500px) 500px, 100vw"},"sources":[{"srcSet":"/static/f0c75428f863135c7c051c7f7e0786c3/c658f/labels_cropped.webp 125w,\\n/static/f0c75428f863135c7c051c7f7e0786c3/987ad/labels_cropped.webp 250w,\\n/static/f0c75428f863135c7c051c7f7e0786c3/6f880/labels_cropped.webp 500w,\\n/static/f0c75428f863135c7c051c7f7e0786c3/81992/labels_cropped.webp 1000w","type":"image/webp","sizes":"(min-width: 500px) 500px, 100vw"}]},"width":500,"height":667}');
 
 /***/ }),
 

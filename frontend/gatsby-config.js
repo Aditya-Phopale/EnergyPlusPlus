@@ -32,7 +32,7 @@ module.exports = {
         background_color: `#663399`,
         theme_color: `#007bc6`,
         display: `standalone`,
-        icon: `src/images/icon_new.png`, // change the icon here and then recompile. This path is relative to the root of the site.
+        icon: `src/images/icon.png`, // change the icon here and then recompile. This path is relative to the root of the site.
       },
     },
     `gatsby-plugin-gatsby-cloud`,

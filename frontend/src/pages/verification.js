@@ -5,19 +5,15 @@ import { StaticImage } from "gatsby-plugin-image"
 import Layout from "../components/layout"
 import {Seo} from "../components/seo"
 
-
-function show_image(src, width, height, alt) {
+function show_image(src, alt) {
   var img = document.createElement("img");
   img.src = src;
-  img.width = width;
-  img.height = height;
   img.alt = alt;
 
   var br = document.createElement("br");
   // This next line will just add it to the <body> tag
   document.body.append(img, br);
 }
-
 
 const Verification = () => (
   <Layout>
@@ -35,7 +31,9 @@ const Verification = () => (
 
       <div className="row">
         <Link to="/model/" className="btn btn-primary my-2">Create my thermal model</Link>
-        <button class="next-page-button" onclick="show_image('../images/graph.svg', 500,300, 'shows which rooms are connected');">Show connectivity</button>
+        <button class="next-page-button" 
+        // onclick={show_image('../images/icon.png', "show connectivity")}
+        >Show connectivity</button>
       </div>
     </div>
   </Layout>

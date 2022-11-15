@@ -984,19 +984,19 @@ const Model = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElemen
   className: "container text-center my-5"
 }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("h1", null, " Result"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", null, " Here is a simulation of your model!"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(gatsby_plugin_image__WEBPACK_IMPORTED_MODULE_4__.StaticImage, {
   src: "../images/mockUpModelPlot.png",
-  width: 300,
+  width: 500,
   quality: 95,
   formats: ["AUTO", "WEBP"],
   alt: "A Gatsby astronaut",
   className: "img-fluid",
-  __imageData: __webpack_require__(/*! ./.cache/caches/gatsby-plugin-image/2734907947.json */ "./.cache/caches/gatsby-plugin-image/2734907947.json")
+  __imageData: __webpack_require__(/*! ./.cache/caches/gatsby-plugin-image/1661656881.json */ "./.cache/caches/gatsby-plugin-image/1661656881.json")
 }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
   className: "row"
 }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(gatsby__WEBPACK_IMPORTED_MODULE_1__.Link, {
   to: "/start/",
   className: "btn btn-primary my-2"
 }, "Back to homepage"))));
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Start);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Model);
 const Head = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_seo__WEBPACK_IMPORTED_MODULE_3__.Seo, {
   title: "Model"
 });
@@ -1013,14 +1013,14 @@ const Head = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement
 
 /***/ }),
 
-/***/ "./.cache/caches/gatsby-plugin-image/2734907947.json":
+/***/ "./.cache/caches/gatsby-plugin-image/1661656881.json":
 /*!***********************************************************!*\
-  !*** ./.cache/caches/gatsby-plugin-image/2734907947.json ***!
+  !*** ./.cache/caches/gatsby-plugin-image/1661656881.json ***!
   \***********************************************************/
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"layout":"constrained","backgroundColor":"#f8f8f8","images":{"fallback":{"src":"/static/ac29754aa6eb9e78337c875bc775b8da/ad1c5/mockUpModelPlot.png","srcSet":"/static/ac29754aa6eb9e78337c875bc775b8da/63b64/mockUpModelPlot.png 75w,\\n/static/ac29754aa6eb9e78337c875bc775b8da/49e6c/mockUpModelPlot.png 150w,\\n/static/ac29754aa6eb9e78337c875bc775b8da/ad1c5/mockUpModelPlot.png 300w,\\n/static/ac29754aa6eb9e78337c875bc775b8da/3c27d/mockUpModelPlot.png 600w","sizes":"(min-width: 300px) 300px, 100vw"},"sources":[{"srcSet":"/static/ac29754aa6eb9e78337c875bc775b8da/f8c9c/mockUpModelPlot.webp 75w,\\n/static/ac29754aa6eb9e78337c875bc775b8da/448ea/mockUpModelPlot.webp 150w,\\n/static/ac29754aa6eb9e78337c875bc775b8da/9bb64/mockUpModelPlot.webp 300w,\\n/static/ac29754aa6eb9e78337c875bc775b8da/6aca2/mockUpModelPlot.webp 600w","type":"image/webp","sizes":"(min-width: 300px) 300px, 100vw"}]},"width":300,"height":200}');
+module.exports = JSON.parse('{"layout":"constrained","backgroundColor":"#f8f8f8","images":{"fallback":{"src":"/static/ac29754aa6eb9e78337c875bc775b8da/ef9c2/mockUpModelPlot.png","srcSet":"/static/ac29754aa6eb9e78337c875bc775b8da/85e81/mockUpModelPlot.png 125w,\\n/static/ac29754aa6eb9e78337c875bc775b8da/286e7/mockUpModelPlot.png 250w,\\n/static/ac29754aa6eb9e78337c875bc775b8da/ef9c2/mockUpModelPlot.png 500w","sizes":"(min-width: 500px) 500px, 100vw"},"sources":[{"srcSet":"/static/ac29754aa6eb9e78337c875bc775b8da/e36b4/mockUpModelPlot.webp 125w,\\n/static/ac29754aa6eb9e78337c875bc775b8da/077c3/mockUpModelPlot.webp 250w,\\n/static/ac29754aa6eb9e78337c875bc775b8da/d5f08/mockUpModelPlot.webp 500w","type":"image/webp","sizes":"(min-width: 500px) 500px, 100vw"}]},"width":500,"height":333}');
 
 /***/ }),
 

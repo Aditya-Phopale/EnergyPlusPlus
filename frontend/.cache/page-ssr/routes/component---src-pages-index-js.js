@@ -985,7 +985,7 @@ const IndexPage = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createEl
   width: 300,
   quality: 95,
   formats: ["AUTO", "WEBP"],
-  alt: "A Gatsby astronaut",
+  alt: "icon",
   className: "img-fluid",
   __imageData: __webpack_require__(/*! ./.cache/caches/gatsby-plugin-image/537024356.json */ "./.cache/caches/gatsby-plugin-image/537024356.json")
 }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {

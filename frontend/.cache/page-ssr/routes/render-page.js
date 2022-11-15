@@ -1916,13 +1916,13 @@ var plugins = [{
     "background_color": "#663399",
     "theme_color": "#007bc6",
     "display": "standalone",
-    "icon": "src/images/icon_new.png",
+    "icon": "src/images/icon.png",
     "legacy": true,
     "theme_color_in_head": true,
     "cache_busting_mode": "query",
     "crossOrigin": "anonymous",
     "include_favicon": true,
-    "cacheDigest": null
+    "cacheDigest": "d0a8454a6c33a24b4aa9c09b66f46e53"
   }
 }, {
   name: 'gatsby-plugin-gatsby-cloud',
