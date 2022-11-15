@@ -970,16 +970,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function show_image(src, width, height, alt) {
-  var img = document.createElement("img");
-  img.src = src;
-  img.width = width;
-  img.height = height;
-  img.alt = alt;
-  var br = document.createElement("br");
-  // This next line will just add it to the <body> tag
-  document.body.append(img, br);
-}
 const Model = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_layout__WEBPACK_IMPORTED_MODULE_2__["default"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
   className: "container text-center my-5"
 }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("h1", null, " Result"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", null, " Here is a simulation of your model!"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(gatsby_plugin_image__WEBPACK_IMPORTED_MODULE_4__.StaticImage, {
