@@ -6,6 +6,7 @@ import { useState, useEffect} from 'react'
 import Layout from "../components/layout"
 import {Seo} from "../components/seo"
 
+//https://stackoverflow.com/questions/70679860/trying-to-display-an-photo-when-button-is-clicked-reactjs
 
 function Verification () {
   const [isImageActive, setIsImageActive] = useState(false);
