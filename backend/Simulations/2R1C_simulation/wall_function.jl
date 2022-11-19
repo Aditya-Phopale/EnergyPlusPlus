@@ -1,15 +1,16 @@
 using ModelingToolkit, OrdinaryDiffEq, Plots
 using ModelingToolkitStandardLibrary.Electrical
 using ModelingToolkitStandardLibrary.Blocks: Constant
+import IfElse
 
 R1 = 0.55
 R2 = 0.55
 C = 4704000
 Croom = 60025
-C_second_room = 10000000000000.0
 V = 283.0
-V_heating = 293.0
-proportional_const = 60
+V_heating = 323.0
+V_desired = 293.0
+proportional_const = 100
 
 # @named capacitor_room = Capacitor(C=Croom, v_start=Vin1)
 # @named capacitor_second_room = Capacitor(C=C_second_room, v_start=Vin2)
@@ -53,6 +54,7 @@ function ThreePort_Room(; name, v1_start = 283.0, v2_start = 0.0, i1_start = 0.0
         i1(t) = i1_start
         i2(t) = i2_start
         i3(t) = i3_start
+        ifcond(t) = false
     end
     eqs = [v1 ~ p.v - n1.v
            v2 ~ p.v - n2.v
@@ -64,21 +66,26 @@ function ThreePort_Room(; name, v1_start = 283.0, v2_start = 0.0, i1_start = 0.0
     return compose(ODESystem(eqs, t, sts, []; name = name), p, n1, n2)
 end
 
-function Room_component(; name, Croom, V_heating, proportional_const)
+function Room_component(; name, Croom, V_heating, V_desired, proportional_const)
     @named threeport_room = ThreePort_Room()
-    @unpack v1,v2,i1,i2,i3 = threeport_room
+    @unpack v1,v2,i1,i2,i3,ifcond = threeport_room
 
     pars = @parameters begin 
         V_heating = V_heating
+        V_desired = V_desired
         proportional_const = proportional_const
         Croom = Croom
     end
 
+    continuous_events = [
+        (v1 - V_desired ~ 0) => [ifcond ~ true]
+    ]
     room_eqs = [
-            i3 ~ proportional_const*(v1 - V_heating)
-            D(v1) ~ i2/Croom   
+            i3 ~ IfElse.ifelse(ifcond == true, -75.0, proportional_const*(v1 - V_heating))
+            D(v1) ~ i2/Croom
+            D(ifcond) ~ 0   
         ]
-    extend(ODESystem(room_eqs, t, [], pars; name = name), threeport_room)   
+    extend(ODESystem(room_eqs, t, [], pars; name = name, continuous_events), threeport_room)   
 
 end
 
@@ -106,7 +113,7 @@ end
 @named wall2 = wall_2R1C(; R1, R2, C)
 @named wall3 = wall_2R1C(; R1, R2, C)
 @named wall4 = wall_2R1C(; R1, R2, C)
-@named room = Room_component(; Croom, V_heating, proportional_const)
+@named room = Room_component(; Croom, V_heating, V_desired, proportional_const)
 
 eqs = [
     connect(room.p, wall1.p1, wall2.p1, wall3.p1, wall4.p1)
@@ -121,10 +128,12 @@ eqs = [
 
 @named single_layer_wall_model = ODESystem(eqs, t, systems=[wall1, wall2, wall3, wall4, room, source, constant, ground])
 sys = structural_simplify(single_layer_wall_model)
-prob = ODAEProblem(sys, Pair[] , (0, 100000.0))
+prob = ODAEProblem(sys, Pair[] , (0, 5000.0))
 sol = solve(prob, Tsit5())
 #plot(sol, vars = capacitor_room.v, title = "Single-Layer Wall Model (2R1C) Circuit Demonstration", labels = ["Room Temperature"])
-plot(sol, vars = [room.v1, wall1.vc], title = "Single-Layer Wall Model (2R1C) Circuit Demonstration", labels = ["Room Temperature" "Wall Temperature"])
+p = plot(sol, vars = [room.v1, wall1.vc], title = "1 Room 4 Wall model", labels = ["Room Temperature" "Wall Temperature"], linewidth=3, thickness_scaling = 1)
+xlabel!(p, "Time (sec)")
+ylabel!(p, "Temperature (K)")
 #plot(sol, vars = [capacitor_room.v, wall.vc], title = "Single-Layer Wall Model (2R1C) Circuit Demonstration", labels = ["Room Temperature" "Wall Temperature"])
 
 savefig("plot.png")
