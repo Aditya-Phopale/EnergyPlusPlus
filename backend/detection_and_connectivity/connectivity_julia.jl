@@ -2,10 +2,6 @@ using MetaGraphsNext
 using Graphs
 using JSON
 using DataStructures
-using ModelingToolkit, OrdinaryDiffEq, Plots
-using ModelingToolkitStandardLibrary.Electrical
-using ModelingToolkitStandardLibrary.Blocks: Constant
-using Compose, Cairo
 
 include("utils.jl")
 
@@ -18,27 +14,6 @@ struct Wall
 	Ar::Float64
 	t::Float64
 end
-
-## Wall function
-function wall_2R1C(; name, R1, R2, C)
-    
-    @named threeport = ThreePort()
-    @unpack v1,v2,i1,i2,i3,vc = threeport
-
-    pars = @parameters begin 
-        R1 = R1
-        R2 = R2
-        C = C
-    end 
-
-    wall_eqs = [
-        v2 ~ R2*i2 + vc
-        v1 ~ R1*i1 + vc
-        D(vc) ~ i3/C
-        ]
-    extend(ODESystem(wall_eqs, t, [], pars; name = name), threeport)   
-end
-
 
 println("\nRUNNING JULIA SCRIPT\n")
 
@@ -89,12 +64,7 @@ for (key, value) in connectivity
 end
 
 println("\n EDGES CREATED\n")
-
-
-print("\nGraph Created Successfully!!\n")
-
-
-
+println("\nGraph Created Successfully!!\n")
 
 nRooms = nv(buildNetwork);
 nWalls = ne(buildNetwork);
@@ -110,32 +80,39 @@ rooms = vertices(buildNetwork)
 walls = edges(buildNetwork)
 eqs = []
 systemBuild = [ground]
-wall_array = Dict()
 
 # The capacitor_room will provide a way to give the named returned value a unique value every time 
 # Checkout Julia maps for more
-capacitor_room = MutableLinkedList{Any}()
+@named Room_array 1:nRooms i -> Capacitor(C = buildNetwork[label_for( buildNetwork, i)].Vol, v_start=2.0)
 # This keeps a collection of all initialized capacitors which later on is used for wall connections
-capacitor_collection = MutableLinkedList{Any}()
+
+#println(length(connectivity))
+#println(nRooms)
 
 # Define capacitance for rooms
-for i in 1:length(connectivity)
-    currRoomLabel = label_for( buildNetwork, i)
-    curr = String(currRoomLabel)
-    curr = string(curr[length(curr)])
-    cap_room = @named capacitor_room[collect(curr)] = Capacitor(C = buildNetwork[currRoomLabel].Vol, v_start=2.0)
-    push!(capacitor_collection, cap_room[1])
-    # global capacitor, systemBuild, ground, eqs, buildNetwork
-    # print(typeof(cap))
-    # @named capacitorString[currRoomLabel_new] = 
-    push!( systemBuild, cap_room[1])
-    push!(eqs, connect(cap_room[1].n, ground.g))
+for i in 1:nRooms
+    push!(eqs, connect(Room_array[i].n, ground.g))
+    push!(systemBuild, Room_array[i])
 end
 
+println("\nADDED CAPACITORS TO NODES\n")
 
+@named wall_array 1:nWalls i -> wall_2R1C(; R1 = R1wall, R2 = R2wall, C = Cwall)
 
-wall_room = MutableLinkedList{Any}()
+i = 1
+for currWall in walls
+    sourceRoom = src(currWall)
+	destRoom = dst(currWall)    
+    push!(systemBuild, wall_array[i])
+	push!(eqs, connect(wall_array[i].n, ground.g))
+	push!(eqs, connect(wall_array[i].p1, Room_array[sourceRoom].p))
+	push!(eqs, connect(wall_array[i].p2, Room_array[destRoom].p))
+    global i = i+1
+end
 
+println("\nCONNECTED NODES WITH 2R1C\n")
+
+#=
 # This string gives unique name to connections - has to be as long as there are connections in our graph
 ##TODO: Find a way to add variable length strings to the @named entity
 temp_string = "abcdefghijklmnopqrstuvwxyz1234567890"
@@ -161,6 +138,8 @@ for (key, value) in connectivity
     end
 end
 
+=#
+
 @named buildingThermalModel = ODESystem(eqs, t, systems=systemBuild)
 println("\n Built Thermal Model \n")
 
@@ -174,12 +153,13 @@ sol = solve(prob, Tsit5())
 
 println("Executed successfully")
 
-for (key,value) in connectivity
-    i = parse(Int, string(key[length(key)]))
-    plot(sol, vars = [capacitor_collection[i+1].v], title = "Mockup Model", labels = ["Room Temperature"])
-    text = key*"_"*"Prototype_Model_Simple.png"
+for i in 1:nRooms
+#    i = parse(Int, string(key[length(key)]))
+    plot(sol, vars = [Room_array[i].v], title = "Mockup Model", labels = ["Room Temperature"])
+    text = "Room_"*string(i)*"_"*"Prototype_Model_Simple.png"
     savefig(text)
 end
+
 
 using GraphPlot, Colors
 nodefillc = distinguishable_colors(nv(buildNetwork), colorant"blue")

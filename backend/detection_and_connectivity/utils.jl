@@ -1,4 +1,11 @@
-## Three Port for Room componenet
+__precompile__() 
+
+using ModelingToolkit, OrdinaryDiffEq, Plots
+using ModelingToolkitStandardLibrary.Electrical
+using ModelingToolkitStandardLibrary.Blocks: Constant
+using Compose, Cairo
+
+## Three Port for Room component
 function ThreePort_Room(; name, v1_start = 283.0, v2_start = 0.0, i1_start = 0.0, i2_start = 0.0, i3_start = 0.0)
     @named p = Pin()
     @named n1 = Pin()
@@ -17,7 +24,7 @@ function ThreePort_Room(; name, v1_start = 283.0, v2_start = 0.0, i1_start = 0.0
            i2 ~ n1.i
            i3 ~ n2.i
           ]
-    return compose(ODESystem(eqs, t, sts, []; name = name), p, n1, n2)
+    return ModelingToolkit.compose(ODESystem(eqs, t, sts, []; name = name), p, n1, n2)
 end
 
 ## Three Port for wall componenet
@@ -40,5 +47,25 @@ function ThreePort(; name, v1_start = 0.0, v2_start = 0.0, i1_start = 0.0, i2_st
            i2 ~ p2.i
            i3 ~ n.i
           ]
-    return compose(ODESystem(eqs, t, sts, []; name = name), p1, p2, n)
+    return ModelingToolkit.compose(ODESystem(eqs, t, sts, []; name = name), p1, p2, n)
+end
+
+## Wall function
+function wall_2R1C(; name, R1, R2, C)
+    
+    @named threeport = ThreePort()
+    @unpack v1,v2,i1,i2,i3,vc = threeport
+
+    pars = @parameters begin 
+        R1 = R1
+        R2 = R2
+        C = C
+    end 
+
+    wall_eqs = [
+        v2 ~ R2*i2 + vc
+        v1 ~ R1*i1 + vc
+        D(vc) ~ i3/C
+        ]
+    extend(ODESystem(wall_eqs, t, [], pars; name = name), threeport)   
 end
