@@ -5,6 +5,7 @@ using DataStructures
 using ModelingToolkit, OrdinaryDiffEq, Plots
 using ModelingToolkitStandardLibrary.Electrical
 using ModelingToolkitStandardLibrary.Blocks: Constant
+using Compose, Cairo
 
 struct Room
 	Name::String
@@ -36,7 +37,7 @@ function ThreePort(; name, v1_start = 0.0, v2_start = 0.0, i1_start = 0.0, i2_st
            i2 ~ p2.i
            i3 ~ n.i
           ]
-    return compose(ODESystem(eqs, t, sts, []; name = name), p1, p2, n)
+    return ModelingToolkit.compose(ODESystem(eqs, t, sts, []; name = name), p1, p2, n)
 end
 
 ## Wall function
@@ -73,16 +74,26 @@ open("connectivity.json", "r") do f
     connectivity=JSON.parse(dicttxt)  # parse and transform data
 end
 
+rooms = String[]
+for i in 1:length(connectivity)
+    text = "room" *string(i-1)
+    push!(rooms, text)
+end
+
+
 buildNetwork = MetaGraph(Graph(), VertexData = Room, EdgeData = Wall, graph_data = "build connec model")
 # Create Nodes
 # The room name cannot directly be fed into the network Symbol so it has to be
 # converted to a Symbol first and then used
-for (key, value) in connectivity
-    sym = Symbol(key)
-    buildNetwork[sym] = Room(key, connectivity[key]["volume"])
+for room in rooms
+    for (key, value) in connectivity
+        if (room==key)
+            sym = Symbol(key)
+            buildNetwork[sym] = Room(key, connectivity[key]["volume"])
+        end
+    end
 end
 println("\n NODES CREATED\n")
-
 
 # Create Edges
 for (key, value) in connectivity
@@ -191,3 +202,8 @@ for (key,value) in connectivity
     savefig(text)
 end
 
+using GraphPlot, Colors
+nodefillc = distinguishable_colors(nv(buildNetwork), colorant"blue")
+nodelabel = 0:nv(buildNetwork)-1
+graph_viz = gplot(buildNetwork, nodelabel=nodelabel, nodefillc=nodefillc)
+draw(PNG("graph_viz.png", 30cm, 30cm), graph_viz)
