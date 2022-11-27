@@ -1,6 +1,12 @@
 __precompile__() 
 
-using ModelingToolkit, OrdinaryDiffEq, Plots
+import MetaGraphsNext
+import Graphs
+import JSON
+import IfElse
+
+using ModelingToolkit 
+import OrdinaryDiffEq, Plots
 using ModelingToolkitStandardLibrary.Electrical
 using ModelingToolkitStandardLibrary.Blocks: Constant
 using Compose, Cairo
@@ -69,3 +75,28 @@ function wall_2R1C(; name, R1, R2, C)
         ]
     extend(ODESystem(wall_eqs, t, [], pars; name = name), threeport)   
 end
+
+function Room_component(; name, Croom, V_heating, V_desired, proportional_const)
+    @named threeport_room = ThreePort_Room()
+    @unpack v1,v2,i1,i2,i3,ifcond = threeport_room
+
+    pars = @parameters begin 
+        V_heating = V_heating
+        V_desired = V_desired
+        proportional_const = proportional_const
+        Croom = Croom
+    end
+
+    continuous_events = [
+        (v1 - V_desired ~ 0) => [ifcond ~ true]
+    ]
+    room_eqs = [
+            i3 ~ IfElse.ifelse(ifcond == true, -75.0, proportional_const*(v1 - V_heating))
+            D(v1) ~ i2/Croom
+            D(ifcond) ~ 0   
+        ]
+    extend(ODESystem(room_eqs, t, [], pars; name = name, continuous_events), threeport_room)   
+
+end
+
+#end
