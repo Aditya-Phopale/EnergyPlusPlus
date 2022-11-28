@@ -1,6 +1,4 @@
-@time begin
 include("utils.jl")
-end
 
 struct Room
 	Name::String
