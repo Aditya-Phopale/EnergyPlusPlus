@@ -1,3 +1,4 @@
+run(`sudo chmod +rwx connectivity.json`)
 include("utils.jl")
 
 struct Room
@@ -72,9 +73,11 @@ println("\nGraph Created Successfully!!\n")
 @named ground = Ground()
 @parameters t
 D = Differential(t)
-R1wall = 1
-R2wall = 1
-Cwall = 1
+R1wall = 0.55
+R2wall = 0.55
+rho_wall = 2000 # Kg/m3
+Cp_wall = 840  # J/Kg/K
+Cwall = 30000
 counter = 1
 rooms = MetaGraphsNext.vertices(buildNetwork)
 walls = MetaGraphsNext.edges(buildNetwork)
@@ -82,18 +85,23 @@ eqs = []
 systemBuild = [ground]
 
 # The Room_array  will provide a way to give the named returned value a unique value every time 
-@named Room_array 1:nRooms i -> Capacitor(C = buildNetwork[MetaGraphsNext.label_for( buildNetwork, i)].Vol, v_start=2.0)
+rho = 1.225 # Kg/m3
+Cp = 1000 #J/Kg/K
+V_heating = 323.0 # Temperature heating fluid
+V_desired = 293.0 # desired Temperature
+proportional_const = 15.0 # m_dot * Cp_air
+prop_const = zeros(nRooms, 1)
+prop_const[1] = proportional_const
 
-#println(length(connectivity))
-#println(nRooms)
+@named Room_array 1:nRooms i -> Room_component(; Croom = buildNetwork[MetaGraphsNext.label_for( buildNetwork, i)].Vol * rho * Cp, V_heating, V_desired, proportional_const = prop_const[i])
 
 # Define capacitance for rooms
 for i in 1:nRooms
-    push!(eqs, connect(Room_array[i].n, ground.g))
+    push!(eqs, connect(Room_array[i].n1, Room_array[i].n2, ground.g))
     push!(systemBuild, Room_array[i])
 end
 
-println("\nADDED CAPACITORS TO NODES\n")
+println("\nADDED ROOM COMPONENT TO NODES\n")
 
 @named wall_array 1:nWalls i -> wall_2R1C(; R1 = R1wall, R2 = R2wall, C = Cwall)
 
@@ -116,7 +124,7 @@ println("\n Built Thermal Model \n")
 sys = structural_simplify(buildingThermalModel)
 println("\n Simplified Structure \n")
 
-prob = ODAEProblem(sys, Pair[] , (0, 50.0))
+prob = ODAEProblem(sys, Pair[] , (0, 86400.0))
 println("\n ODE problem Defined \n")
 
 sol = OrdinaryDiffEq.solve(prob, OrdinaryDiffEq.Tsit5())
@@ -124,7 +132,9 @@ sol = OrdinaryDiffEq.solve(prob, OrdinaryDiffEq.Tsit5())
 println("Executed successfully")
 
 for i in 1:nRooms
-    plot(sol, vars = [Room_array[i].v], title = "Mockup Model", labels = ["Room Temperature"])
-    text = "Room_"*string(i)*"_"*"Prototype_Model_Simple.png"
-    savefig(text)
+   Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature")
+   # text = "Room_"*string(i)*"_"*"Prototype_Model_Simple.png"
+   # savefig(text)
 end
+text = "Prototype_Model_Simple.png"
+Plots.savefig(text)

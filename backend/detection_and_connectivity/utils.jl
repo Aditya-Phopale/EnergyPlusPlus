@@ -22,6 +22,7 @@ function ThreePort_Room(; name, v1_start = 283.0, v2_start = 0.0, i1_start = 0.0
         i1(t) = i1_start
         i2(t) = i2_start
         i3(t) = i3_start
+        ifcond(t) = false
     end
     eqs = [v1 ~ p.v - n1.v
            v2 ~ p.v - n2.v
@@ -33,8 +34,8 @@ function ThreePort_Room(; name, v1_start = 283.0, v2_start = 0.0, i1_start = 0.0
     return ModelingToolkit.compose(ODESystem(eqs, t, sts, []; name = name), p, n1, n2)
 end
 
-## Three Port for wall componenet
-function ThreePort(; name, v1_start = 0.0, v2_start = 0.0, i1_start = 0.0, i2_start = 0.0, i3_start = 0.0)
+## Three Port for wall component
+function ThreePort(; name, v1_start = 0.0, v2_start = 0.0, i1_start = 0.0, i2_start = 0.0, i3_start = 0.0, v_wall_start = 283.0)
     @named p1 = Pin()
     @named p2 = Pin()
     @named n = Pin()
@@ -44,7 +45,7 @@ function ThreePort(; name, v1_start = 0.0, v2_start = 0.0, i1_start = 0.0, i2_st
         i1(t) = i1_start
         i2(t) = i2_start
         i3(t) = i3_start
-        vc(t) = v1_start
+        vc(t) = v_wall_start
     end
     eqs = [v1 ~ p1.v - n.v
            v2 ~ p2.v - n.v
@@ -88,10 +89,11 @@ function Room_component(; name, Croom, V_heating, V_desired, proportional_const)
     end
 
     continuous_events = [
-        (v1 - V_desired ~ 0) => [ifcond ~ true]
+        (v1 - V_desired ~ 1) => [ifcond ~ true]
+        (v1 - V_desired ~ -1) => [ifcond ~ false]
     ]
     room_eqs = [
-            i3 ~ IfElse.ifelse(ifcond == true, -75.0, proportional_const*(v1 - V_heating))
+            i3 ~ IfElse.ifelse(ifcond == true, 0, proportional_const*(v1 - V_heating))
             D(v1) ~ i2/Croom
             D(ifcond) ~ 0   
         ]
