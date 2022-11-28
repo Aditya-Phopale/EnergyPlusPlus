@@ -61,3 +61,24 @@ python3 connectivity_python.py
 julia connectivity_julia.jl
 ```
 (Check run.sh incase permissions are required)
+
+# GUI in Gatsby
+to run the frontend application localy go into the frontend folder. 
+for developement (after installing the e.g. gatsby, react and npm)
+
+run in the terminal: 
+    ```
+    gatsby develop
+    ```
+    -> is nice for developement, because changes can be immediatley seen in the browser. 
+    
+for production run: 
+    ```
+    gatsby build 
+    ```
+    -> has to be only done once, after changing the code. This builds the website in an optimized way into public
+    and then 
+    ```
+    gatsby serve 
+    ```
+    -> now the website is executed and can be seen in e.g. http://localhost:9000/
