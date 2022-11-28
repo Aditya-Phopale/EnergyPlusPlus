@@ -971,47 +971,43 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// function show_image(src, alt) {
-//   var img = document.createElement("img");
-//   img.src = src;
-//   img.alt = alt;
 
-//   var br = document.createElement("br");
-//   // This next line will just add it to the <body> tag
-//   document.body.append(img, br);
-// }
+//https://stackoverflow.com/questions/70679860/trying-to-display-an-photo-when-button-is-clicked-reactjs
 
-class Verification extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
-  ShowImage() {
-    alert('hi');
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-      className: "container text-center my-5"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("img", {
-      src: "../images/icon.png",
-      alt: "connectivity"
-    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", null, "hi"));
+function Verification() {
+  const {
+    0: isImageActive,
+    1: setIsImageActive
+  } = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  function clickEventHandler() {
+    setIsImageActive(true);
   }
-  render() {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_layout__WEBPACK_IMPORTED_MODULE_2__["default"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-      className: "container text-center my-5"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("h1", null, " Bounding Boxes"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", null, " Here is a result for the recognition of the rooms of your building:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(gatsby_plugin_image__WEBPACK_IMPORTED_MODULE_4__.StaticImage, {
-      src: "../images/labels_cropped.png",
-      width: 500,
-      quality: 95,
-      formats: ["AUTO", "WEBP"],
-      alt: "labeled floor plan",
-      className: "img-fluid",
-      __imageData: __webpack_require__(/*! ./.cache/caches/gatsby-plugin-image/619345843.json */ "./.cache/caches/gatsby-plugin-image/619345843.json")
-    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-      className: "row"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(gatsby__WEBPACK_IMPORTED_MODULE_1__.Link, {
-      to: "/model/",
-      className: "btn btn-primary my-2"
-    }, "Create my thermal model"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
-      class: "next-page-button",
-      onClick: this.ShowImage
-    }, "Show connectivity"))));
-  }
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_layout__WEBPACK_IMPORTED_MODULE_2__["default"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "container text-center my-5"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("h1", null, " Bounding Boxes"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", null, " Here is a result for the recognition of the rooms of your building:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(gatsby_plugin_image__WEBPACK_IMPORTED_MODULE_4__.StaticImage, {
+    src: "../images/labels_cropped.png",
+    width: 500,
+    quality: 95,
+    formats: ["AUTO", "WEBP"],
+    alt: "labeled floor plan",
+    className: "img-fluid",
+    __imageData: __webpack_require__(/*! ./.cache/caches/gatsby-plugin-image/619345843.json */ "./.cache/caches/gatsby-plugin-image/619345843.json")
+  }), isImageActive && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(gatsby_plugin_image__WEBPACK_IMPORTED_MODULE_4__.StaticImage, {
+    src: "../images/graph.svg",
+    height: 1000,
+    quality: 95,
+    formats: ["AUTO", "WEBP"],
+    alt: "labeled floor plan",
+    className: "img-fluid",
+    __imageData: __webpack_require__(/*! ./.cache/caches/gatsby-plugin-image/3485255124.json */ "./.cache/caches/gatsby-plugin-image/3485255124.json")
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "row"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(gatsby__WEBPACK_IMPORTED_MODULE_1__.Link, {
+    to: "/model/",
+    className: "btn btn-primary my-2"
+  }, "Create my thermal model"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+    onClick: clickEventHandler
+  }, "Show connectivity graph"))));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Verification);
 const Head = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_seo__WEBPACK_IMPORTED_MODULE_3__.Seo, {
@@ -1027,6 +1023,17 @@ const Head = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement
 /***/ (() => {
 
 
+
+/***/ }),
+
+/***/ "./.cache/caches/gatsby-plugin-image/3485255124.json":
+/*!***********************************************************!*\
+  !*** ./.cache/caches/gatsby-plugin-image/3485255124.json ***!
+  \***********************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"layout":"constrained","backgroundColor":"#080808","images":{"fallback":{"src":"/static/08b8aed03a1e3c3aa05cbc148b156b65/fb1be/graph.svg","srcSet":"/static/08b8aed03a1e3c3aa05cbc148b156b65/ce857/graph.svg 100w,\\n/static/08b8aed03a1e3c3aa05cbc148b156b65/96f47/graph.svg 201w,\\n/static/08b8aed03a1e3c3aa05cbc148b156b65/fb1be/graph.svg 401w","sizes":"(min-width: 401px) 401px, 100vw"},"sources":[{"srcSet":"/static/08b8aed03a1e3c3aa05cbc148b156b65/089d7/graph.webp 100w,\\n/static/08b8aed03a1e3c3aa05cbc148b156b65/960d6/graph.webp 201w,\\n/static/08b8aed03a1e3c3aa05cbc148b156b65/4eb6e/graph.webp 401w","type":"image/webp","sizes":"(min-width: 401px) 401px, 100vw"}]},"width":401,"height":283}');
 
 /***/ }),
 

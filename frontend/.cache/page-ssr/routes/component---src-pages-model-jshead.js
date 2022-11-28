@@ -973,17 +973,17 @@ __webpack_require__.r(__webpack_exports__);
 const Model = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_layout__WEBPACK_IMPORTED_MODULE_2__["default"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
   className: "container text-center my-5"
 }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("h1", null, " Result"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", null, " Here is a simulation of your model!"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(gatsby_plugin_image__WEBPACK_IMPORTED_MODULE_4__.StaticImage, {
-  src: "../images/mockUpModelPlot.png",
+  src: "../images/Model_results.png",
   width: 500,
-  quality: 95,
+  quality: 100,
   formats: ["AUTO", "WEBP"],
   alt: "A Gatsby astronaut",
   className: "img-fluid",
-  __imageData: __webpack_require__(/*! ./.cache/caches/gatsby-plugin-image/1661656881.json */ "./.cache/caches/gatsby-plugin-image/1661656881.json")
+  __imageData: __webpack_require__(/*! ./.cache/caches/gatsby-plugin-image/961648695.json */ "./.cache/caches/gatsby-plugin-image/961648695.json")
 }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
   className: "row"
 }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(gatsby__WEBPACK_IMPORTED_MODULE_1__.Link, {
-  to: "/start/",
+  to: "/",
   className: "btn btn-primary my-2"
 }, "Back to homepage"))));
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Model);
@@ -1003,14 +1003,14 @@ const Head = () => /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement
 
 /***/ }),
 
-/***/ "./.cache/caches/gatsby-plugin-image/1661656881.json":
-/*!***********************************************************!*\
-  !*** ./.cache/caches/gatsby-plugin-image/1661656881.json ***!
-  \***********************************************************/
+/***/ "./.cache/caches/gatsby-plugin-image/961648695.json":
+/*!**********************************************************!*\
+  !*** ./.cache/caches/gatsby-plugin-image/961648695.json ***!
+  \**********************************************************/
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"layout":"constrained","backgroundColor":"#f8f8f8","images":{"fallback":{"src":"/static/ac29754aa6eb9e78337c875bc775b8da/ef9c2/mockUpModelPlot.png","srcSet":"/static/ac29754aa6eb9e78337c875bc775b8da/85e81/mockUpModelPlot.png 125w,\\n/static/ac29754aa6eb9e78337c875bc775b8da/286e7/mockUpModelPlot.png 250w,\\n/static/ac29754aa6eb9e78337c875bc775b8da/ef9c2/mockUpModelPlot.png 500w","sizes":"(min-width: 500px) 500px, 100vw"},"sources":[{"srcSet":"/static/ac29754aa6eb9e78337c875bc775b8da/e36b4/mockUpModelPlot.webp 125w,\\n/static/ac29754aa6eb9e78337c875bc775b8da/077c3/mockUpModelPlot.webp 250w,\\n/static/ac29754aa6eb9e78337c875bc775b8da/d5f08/mockUpModelPlot.webp 500w","type":"image/webp","sizes":"(min-width: 500px) 500px, 100vw"}]},"width":500,"height":333}');
+module.exports = JSON.parse('{"layout":"constrained","backgroundColor":"#f8f8f8","images":{"fallback":{"src":"/static/901b561b041cbf770a4d14ef89ce6dab/fca11/Model_results.png","srcSet":"/static/901b561b041cbf770a4d14ef89ce6dab/15bf1/Model_results.png 125w,\\n/static/901b561b041cbf770a4d14ef89ce6dab/6d484/Model_results.png 250w,\\n/static/901b561b041cbf770a4d14ef89ce6dab/fca11/Model_results.png 500w","sizes":"(min-width: 500px) 500px, 100vw"},"sources":[{"srcSet":"/static/901b561b041cbf770a4d14ef89ce6dab/55ace/Model_results.webp 125w,\\n/static/901b561b041cbf770a4d14ef89ce6dab/aec34/Model_results.webp 250w,\\n/static/901b561b041cbf770a4d14ef89ce6dab/c915e/Model_results.webp 500w","type":"image/webp","sizes":"(min-width: 500px) 500px, 100vw"}]},"width":500,"height":347}');
 
 /***/ }),
 
