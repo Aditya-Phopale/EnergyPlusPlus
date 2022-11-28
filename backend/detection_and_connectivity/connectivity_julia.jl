@@ -132,7 +132,7 @@ sol = OrdinaryDiffEq.solve(prob, OrdinaryDiffEq.Tsit5())
 println("Executed successfully")
 
 for i in 1:nRooms
-   Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature")
+   Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i))
    # text = "Room_"*string(i)*"_"*"Prototype_Model_Simple.png"
    # savefig(text)
 end
