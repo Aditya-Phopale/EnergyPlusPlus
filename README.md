@@ -63,10 +63,23 @@ julia connectivity_julia.jl
 (Check run.sh incase permissions are required)
 
 # GUI in Gatsby
-to run the frontend application localy go into the frontend folder. 
-for developement (after installing the e.g. gatsby, react and npm)
+To use Gatsby, install Node.js and npm at the following link: [Node.js download](https://nodejs.org/en/download/)
+To run the frontend application, locally go into the frontend folder:
+    ```
+    cd ./directory_to_frontend
+    ```
 
-run in the terminal: 
+
+Run in the terminal:
+    ```
+    npm install
+    ```
+Note: if you're on Mac, especially ARM architecture, you might need to force installation by:
+    ```
+    npm install --force
+    ```
+
+Finally, run in the terminal: 
     ```
     gatsby develop
     ```
