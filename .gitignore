@@ -1,5 +1,6 @@
 venv
 __pycache__
-frontend/.cache/ 
+frontend/.cache/*
+frontend/.cache/
 frontend/public/
 node_modules/
