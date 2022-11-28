@@ -63,7 +63,16 @@ julia connectivity_julia.jl
 (Check run.sh incase permissions are required)
 
 # GUI in Gatsby
-To use Gatsby, install Node.js and npm at the following link: [Node.js download](https://nodejs.org/en/download/)
+To use Gatsby, install Node.js and npm at the following link: [Node.js download](https://nodejs.org/en/download/) and install Gatsby CLI with
+    ```
+    npm install -g gatsby-cli
+    ```
+in the terminal. Check it the installation was successful with
+    ```
+    gatsby --version
+    ```
+You should be on v3 or newer.
+
 To run the frontend application, locally go into the frontend folder:
     ```
     cd ./directory_to_frontend
