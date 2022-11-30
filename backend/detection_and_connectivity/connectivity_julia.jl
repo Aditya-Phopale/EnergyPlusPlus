@@ -73,16 +73,32 @@ println("\nGraph Created Successfully!!\n")
 @named ground = Ground()
 @parameters t
 D = Differential(t)
-R1wall = 0.55
-R2wall = 0.55
-rho_wall = 2000 # Kg/m3
-Cp_wall = 840  # J/Kg/K
-Cwall = 30000
-counter = 1
+
 rooms = MetaGraphsNext.vertices(buildNetwork)
 walls = MetaGraphsNext.edges(buildNetwork)
 eqs = []
 systemBuild = [ground]
+
+# wall data for initializing wall function
+i = 1
+k_wall = 0.6
+rho_wall = 2000 # Kg/m3
+Cp_wall = 840  # J/Kg/K
+R1_walls = zeros(nWalls)
+R2_walls = zeros(nWalls)
+C_walls = zeros(nWalls)
+for currWall in walls
+    sourceRoom = Graphs.src(currWall)
+	destRoom = Graphs.dst(currWall) 
+    Data_currwall = buildNetwork[MetaGraphsNext.label_for(buildNetwork,sourceRoom), MetaGraphsNext.label_for(buildNetwork,destRoom)] 
+    Area_currwall = Data_currwall.Ar
+    Thick_currwall = Data_currwall.t
+    println(Area_currwall, " ", Thick_currwall)
+    R1_walls[i] = Thick_currwall/Area_currwall/k_wall/2
+    R2_walls[i] = Thick_currwall/Area_currwall/k_wall/2
+    C_walls[i] = rho_wall * Cp_wall * (Area_currwall * Thick_currwall)
+    global i = i+1
+end
 
 # The Room_array  will provide a way to give the named returned value a unique value every time 
 rho = 1.225 # Kg/m3
@@ -103,7 +119,7 @@ end
 
 println("\nADDED ROOM COMPONENT TO NODES\n")
 
-@named wall_array 1:nWalls i -> wall_2R1C(; R1 = R1wall, R2 = R2wall, C = Cwall)
+@named wall_array 1:nWalls i -> wall_2R1C(; R1 = R1_walls[i], R2 = R2_walls[i], C = C_walls[i])
 
 i = 1
 for currWall in walls
@@ -136,5 +152,5 @@ for i in 1:nRooms
    # text = "Room_"*string(i)*"_"*"Prototype_Model_Simple.png"
    # savefig(text)
 end
-text = "Prototype_Model_Simple.png"
-Plots.savefig(text)
+graph_title = "Prototype_Model_Simple.png"
+Plots.savefig(graph_title)
