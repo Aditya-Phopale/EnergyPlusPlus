@@ -61,3 +61,46 @@ python3 connectivity_python.py
 julia connectivity_julia.jl
 ```
 (Check run.sh incase permissions are required)
+
+# GUI in Gatsby
+To use Gatsby, install Node.js and npm at the following link: [Node.js download](https://nodejs.org/en/download/) and install Gatsby CLI with
+    ```
+    npm install -g gatsby-cli
+    ```
+in the terminal. Check it the installation was successful with
+    ```
+    gatsby --version
+    ```
+You should be on v3 or newer.
+
+To run the frontend application, locally go into the frontend folder:
+    ```
+    cd ./directory_to_frontend
+    ```
+
+
+Run in the terminal:
+    ```
+    npm install
+    ```
+Note: if you're on Mac, especially ARM architecture, you might need to force installation by:
+    ```
+    npm install --force
+    ```
+
+Finally, run in the terminal: 
+    ```
+    gatsby develop
+    ```
+    -> is nice for developement, because changes can be immediatley seen in the browser. 
+    
+for production run: 
+    ```
+    gatsby build 
+    ```
+    -> has to be only done once, after changing the code. This builds the website in an optimized way into public
+    and then 
+    ```
+    gatsby serve 
+    ```
+    -> now the website is executed and can be seen in e.g. http://localhost:9000/
