@@ -74,10 +74,10 @@ println("\nGraph Created Successfully!!\n")
 @parameters t
 D = Differential(t)
 
-constVSource = 303
-@named source = Voltage()
-@named constant_v = Constant(k=constVSource)
-@named variable_v = Cosine(frequency=frequency, amplitude=10, phase=pi, offset=293.0, smooth=true)
+#constVSource = 303
+#@named source = Voltage()
+#@named constant_v = Constant(k=constVSource)
+#@named variable_v = Cosine(frequency=frequency, amplitude=10, phase=pi, offset=293.0, smooth=true)
 
 rooms = MetaGraphsNext.vertices(buildNetwork)
 walls = MetaGraphsNext.edges(buildNetwork)
@@ -117,9 +117,9 @@ V_heating = 323.0 # Temperature heating fluid
 V_desired = 293.0 # desired Temperature
 proportional_const = 15.0 # m_dot * Cp_air
 prop_const = zeros(nRooms, 1)
-prop_const[1] = proportional_const
+prop_const[4] = proportional_const
 
-@named Room_array 1:nRooms i -> Room_component(; Croom = buildNetwork[MetaGraphsNext.label_for( buildNetwork, i)].Vol * rho * Cp, V_heating, V_desired, proportional_const = prop_const[i])
+@named Room_array 1:nRooms i -> Room_component(; Croom = buildNetwork[MetaGraphsNext.label_for( buildNetwork, i)].Vol * rho * Cp, V_heating, V_desired, proportional_const)
 
 # Define capacitance for rooms
 for i in 1:nRooms
@@ -157,10 +157,14 @@ sol = OrdinaryDiffEq.solve(prob, OrdinaryDiffEq.Tsit5())
 
 println("Executed successfully")
 
+Plots.plot()
+
 for i in 1:nRooms
-   Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i))
+   Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i), legend=:bottomleft)
    # text = "Room_"*string(i)*"_"*"Prototype_Model_Simple.png"
    # savefig(text)
 end
+Plots.xlabel!("time (s)")
+Plots.ylabel!("Temperature (K)")
 graph_title = "Prototype_Model_Simple.png"
 Plots.savefig(graph_title)
