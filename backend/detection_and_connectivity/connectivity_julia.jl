@@ -74,10 +74,19 @@ println("\nGraph Created Successfully!!\n")
 @parameters t
 D = Differential(t)
 
+@named source = Voltage()
+@named constant_v = Constant(k=V)
+@named variable_v = Cosine(frequency=frequency, amplitude=10, phase=pi, offset=293.0, smooth=true)
+
 rooms = MetaGraphsNext.vertices(buildNetwork)
 walls = MetaGraphsNext.edges(buildNetwork)
 eqs = []
 systemBuild = [ground]
+
+# adding source voltage (ambient)
+#push!(systemBuild, variable_v)
+#push!(eqs, connect(variable_v.output, source.V))
+#push!(eqs, connect(ground, source.n))
 
 # wall data for initializing wall function
 i = 1
