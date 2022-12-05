@@ -103,7 +103,6 @@ for currWall in walls
     Data_currwall = buildNetwork[MetaGraphsNext.label_for(buildNetwork,sourceRoom), MetaGraphsNext.label_for(buildNetwork,destRoom)] 
     Area_currwall = Data_currwall.Ar
     Thick_currwall = Data_currwall.t
-    println(Area_currwall, " ", Thick_currwall)
     R1_walls[i] = Thick_currwall/Area_currwall/k_wall/2
     R2_walls[i] = Thick_currwall/Area_currwall/k_wall/2
     C_walls[i] = rho_wall * Cp_wall * (Area_currwall * Thick_currwall)
