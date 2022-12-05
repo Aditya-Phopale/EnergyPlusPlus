@@ -74,8 +74,9 @@ println("\nGraph Created Successfully!!\n")
 @parameters t
 D = Differential(t)
 
+constVSource = 303
 @named source = Voltage()
-@named constant_v = Constant(k=V)
+@named constant_v = Constant(k=constVSource)
 @named variable_v = Cosine(frequency=frequency, amplitude=10, phase=pi, offset=293.0, smooth=true)
 
 rooms = MetaGraphsNext.vertices(buildNetwork)
