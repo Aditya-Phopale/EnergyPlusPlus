@@ -73,16 +73,41 @@ println("\nGraph Created Successfully!!\n")
 @named ground = Ground()
 @parameters t
 D = Differential(t)
-R1wall = 0.55
-R2wall = 0.55
-rho_wall = 2000 # Kg/m3
-Cp_wall = 840  # J/Kg/K
-Cwall = 30000
-counter = 1
+
+#constVSource = 303
+#@named source = Voltage()
+#@named constant_v = Constant(k=constVSource)
+#@named variable_v = Cosine(frequency=frequency, amplitude=10, phase=pi, offset=293.0, smooth=true)
+
 rooms = MetaGraphsNext.vertices(buildNetwork)
 walls = MetaGraphsNext.edges(buildNetwork)
 eqs = []
 systemBuild = [ground]
+
+# adding source voltage (ambient)
+#push!(systemBuild, variable_v)
+#push!(eqs, connect(variable_v.output, source.V))
+#push!(eqs, connect(ground, source.n))
+
+# wall data for initializing wall function
+i = 1
+k_wall = 0.6
+rho_wall = 2000 # Kg/m3
+Cp_wall = 840  # J/Kg/K
+R1_walls = zeros(nWalls)
+R2_walls = zeros(nWalls)
+C_walls = zeros(nWalls)
+for currWall in walls
+    sourceRoom = Graphs.src(currWall)
+	destRoom = Graphs.dst(currWall) 
+    Data_currwall = buildNetwork[MetaGraphsNext.label_for(buildNetwork,sourceRoom), MetaGraphsNext.label_for(buildNetwork,destRoom)] 
+    Area_currwall = Data_currwall.Ar
+    Thick_currwall = Data_currwall.t
+    R1_walls[i] = Thick_currwall/Area_currwall/k_wall/2
+    R2_walls[i] = Thick_currwall/Area_currwall/k_wall/2
+    C_walls[i] = rho_wall * Cp_wall * (Area_currwall * Thick_currwall)
+    global i = i+1
+end
 
 # The Room_array  will provide a way to give the named returned value a unique value every time 
 rho = 1.225 # Kg/m3
@@ -91,9 +116,9 @@ V_heating = 323.0 # Temperature heating fluid
 V_desired = 293.0 # desired Temperature
 proportional_const = 15.0 # m_dot * Cp_air
 prop_const = zeros(nRooms, 1)
-prop_const[1] = proportional_const
+prop_const[4] = proportional_const
 
-@named Room_array 1:nRooms i -> Room_component(; Croom = buildNetwork[MetaGraphsNext.label_for( buildNetwork, i)].Vol * rho * Cp, V_heating, V_desired, proportional_const = prop_const[i])
+@named Room_array 1:nRooms i -> Room_component(; Croom = buildNetwork[MetaGraphsNext.label_for( buildNetwork, i)].Vol * rho * Cp, V_heating, V_desired, proportional_const)
 
 # Define capacitance for rooms
 for i in 1:nRooms
@@ -103,7 +128,7 @@ end
 
 println("\nADDED ROOM COMPONENT TO NODES\n")
 
-@named wall_array 1:nWalls i -> wall_2R1C(; R1 = R1wall, R2 = R2wall, C = Cwall)
+@named wall_array 1:nWalls i -> wall_2R1C(; R1 = R1_walls[i], R2 = R2_walls[i], C = C_walls[i])
 
 i = 1
 for currWall in walls
@@ -131,10 +156,14 @@ sol = OrdinaryDiffEq.solve(prob, OrdinaryDiffEq.Tsit5())
 
 println("Executed successfully")
 
+Plots.plot()
+
 for i in 1:nRooms
-   Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i))
+   Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i), legend=:bottomleft)
    # text = "Room_"*string(i)*"_"*"Prototype_Model_Simple.png"
    # savefig(text)
 end
-text = "Prototype_Model_Simple.png"
-Plots.savefig(text)
+Plots.xlabel!("time (s)")
+Plots.ylabel!("Temperature (K)")
+graph_title = "Prototype_Model_Simple.png"
+Plots.savefig(graph_title)
