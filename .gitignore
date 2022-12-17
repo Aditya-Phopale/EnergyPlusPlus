@@ -4,3 +4,4 @@ frontend/.cache/*
 frontend/.cache/
 frontend/public/
 node_modules/
+frontend/package-lock.json
