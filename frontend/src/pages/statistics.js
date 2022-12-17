@@ -1,12 +1,18 @@
 import * as React from "react";
 import { Link } from "gatsby";
-import { useState, useEffect } from "react";
-import { StaticImage } from "gatsby-plugin-image";
 
 import Layout from "../components/layout";
 import { Seo } from "../components/seo";
 
-//https://stackoverflow.com/questions/38049966/get-image-preview-before-uploading-in-react+
+const sendStatistics = e => {
+  // send http request to a local server to post values
+
+  // that's how to access them:
+  // document.getElementById("outside_thickness");
+  // document.getElementById("inside_thickness");
+  // document.getElementById("scaling");
+}
+
 export const Start = () => {
   return (
     <Layout>
@@ -32,7 +38,7 @@ export const Start = () => {
           <br />
           <input
             type="number"
-            id="outside"
+            id="outside_thickness"
             placeholder="1.0"
             step="0.01"
             min="0"
@@ -40,17 +46,18 @@ export const Start = () => {
           ></input>
           <input
             type="number"
-            id="inside"
+            id="inside_thickness"
             placeholder="1.0"
             step="0.01"
             min="0"
             max="5"
           ></input>
         </p>
+        <p>Click on a location on the map to select it (TO BE DONE)</p>
         <br />
         <br />
         <div className="row">
-          <Link to="/verification/" className="btn btn-primary my-2">
+          <Link to="/verification/" className="btn btn-primary my-2" onChange={sendStatistics}>
             Recognize my rooms
           </Link>
           <Link to="/" className="btn btn-secondary my-2">
