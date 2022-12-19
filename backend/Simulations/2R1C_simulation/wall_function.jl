@@ -5,9 +5,9 @@ import IfElse
 
 R1 = 0.55
 R2 = 0.55
-C = 380800
+C = 3808000
 Croom = 60025
-V = 303.0
+V = 273.0
 V_heating = 323.0
 V_desired = 293.0
 proportional_const = 15
@@ -26,7 +26,7 @@ D = Differential(t)
 @named variable = Cosine(frequency=frequency, amplitude=10, phase=pi, offset=293.0, smooth=true)
 # @named constant = Constant(k=V)
 
-function ThreePort(; name, v1_start = 0.0, v2_start = 0.0, i1_start = 0.0, i2_start = 0.0, i3_start = 0.0, v_wall_start = 283.0)
+function ThreePort(; name, v1_start = 0.0, v2_start = 0.0, i1_start = 0.0, i2_start = 0.0, i3_start = 0.0, v_wall_start = 273.0)
     @named p1 = Pin()
     @named p2 = Pin()
     @named n = Pin()
@@ -48,7 +48,33 @@ function ThreePort(; name, v1_start = 0.0, v2_start = 0.0, i1_start = 0.0, i2_st
     return compose(ODESystem(eqs, t, sts, []; name = name), p1, p2, n)
 end
 
-function ThreePort_Room(; name, v1_start = 283.0, v2_start = 0.0, i1_start = 0.0, i2_start = 0.0, i3_start = 0.0)
+# function ThreePort_Room(; name, v1_start = 273.0, v2_start = 0.0, i1_start = 0.0, i2_start = 0.0, i3_start = 0.0)
+#     @named p = Pin()
+#     @named n1 = Pin()
+#     @named n2 = Pin()
+#     sts = @variables begin
+#         v1(t) = v1_start
+#         v2(t) = v2_start
+#         i1(t) = i1_start
+#         i2(t) = i2_start
+#         i3(t) = i3_start
+#         # ifcond(t) = false
+#         error(t) = 0.0
+#         errorsum(t) = 0.0
+#         V_desired(t) = 298.0
+        
+#     end
+#     eqs = [v1 ~ p.v - n1.v
+#            v2 ~ p.v - n2.v
+#            0 ~ p.i - n1.i - n2.i
+#            i1 ~ p.i
+#            i2 ~ n1.i
+#            i3 ~ n2.i
+#           ]
+#     return compose(ODESystem(eqs, t, sts, []; name = name), p, n1, n2)
+# end
+
+function ThreePort_Room(; name, v1_start = 273.0, v2_start = 0.0, i1_start = 0.0, i2_start = 0.0, i3_start = 0.0)
     @named p = Pin()
     @named n1 = Pin()
     @named n2 = Pin()
@@ -58,7 +84,10 @@ function ThreePort_Room(; name, v1_start = 283.0, v2_start = 0.0, i1_start = 0.0
         i1(t) = i1_start
         i2(t) = i2_start
         i3(t) = i3_start
-        ifcond(t) = false
+        # ifcond(t) = false
+        error(t) = 0.0
+        errorsum(t) = 0.0
+        
     end
     eqs = [v1 ~ p.v - n1.v
            v2 ~ p.v - n2.v
@@ -70,9 +99,34 @@ function ThreePort_Room(; name, v1_start = 283.0, v2_start = 0.0, i1_start = 0.0
     return compose(ODESystem(eqs, t, sts, []; name = name), p, n1, n2)
 end
 
+# function Room_component(; name, Croom, V_heating, proportional_const)
+#     @named threeport_room = ThreePort_Room()
+#     @unpack v1,v2,i1,i2,i3,error,errorsum,V_desired = threeport_room
+
+#     pars = @parameters begin 
+#         V_heating = V_heating
+#         proportional_const = proportional_const
+#         Croom = Croom
+#     end
+
+#     continuous_events = [
+#         (50000 - t ~ 0) => [V_desired ~ 288.0]
+#     ]
+
+#     room_eqs = [
+#             i3 ~ -250* error - 0.15* errorsum + 100* D(v1)#IfElse.ifelse(ifcond == true, 0, proportional_const*(v1 - V_heating))
+#             error ~ V_desired - v1
+#             D(v1) ~ i2/Croom
+#             D(errorsum) ~ error 
+#             D(V_desired) ~ 0  
+#         ]
+#     extend(ODESystem(room_eqs, t, [], pars; name = name, continuous_events), threeport_room)   
+
+# end
+
 function Room_component(; name, Croom, V_heating, V_desired, proportional_const)
     @named threeport_room = ThreePort_Room()
-    @unpack v1,v2,i1,i2,i3,ifcond = threeport_room
+    @unpack v1,v2,i1,i2,i3,error,errorsum = threeport_room
 
     pars = @parameters begin 
         V_heating = V_heating
@@ -81,17 +135,19 @@ function Room_component(; name, Croom, V_heating, V_desired, proportional_const)
         Croom = Croom
     end
 
-    continuous_events = [
-        (v1 - V_desired ~ 1) => [ifcond ~ true]
-        (v1 - V_desired ~ -1) => [ifcond ~ false]
-    ]
+    # continuous_events = [
+    #     (t - 50000 ~ 0) => [V_desired ~ 298.0]
+    #     # (v1 - V_desired ~ -1) => [ifcond ~ false]
+    # ]
 
     room_eqs = [
-            i3 ~ IfElse.ifelse(ifcond == true, 0, proportional_const*(v1 - V_heating))
+            i3 ~ -250* error - 0.15* errorsum + 100*D(v1)#IfElse.ifelse(ifcond == true, 0, proportional_const*(v1 - V_heating))
+            error ~ V_desired - v1
             D(v1) ~ i2/Croom
-            D(ifcond) ~ 0   
+            D(errorsum) ~ error 
+            # D(ifcond) ~ 0   
         ]
-    extend(ODESystem(room_eqs, t, [], pars; name = name, continuous_events), threeport_room)   
+    extend(ODESystem(room_eqs, t, [], pars; name = name), threeport_room)   
 
 end
 
@@ -119,17 +175,18 @@ end
 @named wall2 = wall_2R1C(; R1, R2, C)
 @named wall3 = wall_2R1C(; R1, R2, C)
 @named wall4 = wall_2R1C(; R1, R2, C)
+# @named room = Room_component(; Croom, V_heating, proportional_const)
 @named room = Room_component(; Croom, V_heating, V_desired, proportional_const)
 
 eqs = [
     connect(room.p, wall1.p1, wall2.p1, wall3.p1, wall4.p1)
-    connect(variable.output, source.V)
+    connect(constant.output, source.V)
     connect(source.p, wall1.p2, wall2.p2, wall3.p2, wall4.p2)
     connect(room.n1, room.n2, source.n, wall1.n, wall2.n, wall3.n, wall4.n, ground.g)
     ]
 
 
-@named single_layer_wall_model = ODESystem(eqs, t, systems=[wall1, wall2, wall3, wall4, room, source, variable, ground])
+@named single_layer_wall_model = ODESystem(eqs, t, systems=[wall1, wall2, wall3, wall4, room, source, constant, ground])
 sys = structural_simplify(single_layer_wall_model)
 prob = ODAEProblem(sys, Pair[] , (0, 86400.0))
 sol = solve(prob, Tsit5())
@@ -137,6 +194,13 @@ sol = solve(prob, Tsit5())
 p = plot(sol, vars = [room.v1, wall1.vc], title = "1 Room 4 Wall model", labels = ["Room Temperature" "Wall Temperature"], linewidth=3, thickness_scaling = 1)
 xlabel!(p, "Time (sec)")
 ylabel!(p, "Temperature (K)")
+
+
+y=293.0*ones(length(sol))
+z=294.0*ones(length(sol))
+plot!(sol.t,z)
+plot!(sol.t,y, labels="Desired Temperature")
 #plot(sol, vars = [capacitor_room.v, wall.vc], title = "Single-Layer Wall Model (2R1C) Circuit Demonstration", labels = ["Room Temperature" "Wall Temperature"])
+
 
 savefig("plot.png")
