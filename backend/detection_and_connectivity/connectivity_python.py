@@ -17,7 +17,7 @@ from tk import *
 import json
 import os
 
-path ="test.png"
+path ="floor_plan.png"
 path = cv2.imread(path)
 
 # Loading model with the best run so far
@@ -150,18 +150,18 @@ for i in range(len(temp)):
 # Rendering the image with bounding boxes
 result.render(labels=True)
 result.save(labels=True, save_dir="./")
-os.system("mv './.2/image0.jpg' image0.jpg")
+os.system("mv './.2/image0.jpg' boxed_rooms.jpg")
 os.system("rmdir ./.2")
-image = PIL.Image.open("image0.jpg")
+image = PIL.Image.open("boxed_rooms.jpg")
 draw  = PIL.ImageDraw.Draw(image)
 font  = PIL.ImageFont.truetype("arial.ttf", 50, encoding="unic")
 for text, coordinates in zip(entity_labels, centers):
     # annotate each room and save with each annotation
     draw.text( (coordinates[0],coordinates[1]), text, font=font, fill="#0000FF")
-    image.save("image0.png","png")
+    image.save("boxed_ordered_rooms.png","png")
 draw.text([1,5000],str(connectivity), font=font, fill="#0000FF")
-image.save("image0.png","png")
-display(PIL.Image.open("image0.png"))
+image.save("boxed_ordered_rooms.png","png")
+display(PIL.Image.open("boxed_ordered_rooms.png"))
 
 # Writing connnectivity into json file
 with open("connectivity.json","w+") as f:
