@@ -1,4 +1,4 @@
-run(`sudo chmod +rwx connectivity.json`)
+# run(`sudo chmod +rwx connectivity.json`)
 include("utils.jl")
 
 struct Room
@@ -41,7 +41,7 @@ for room in rooms
         end
     end
 end
-# println("\n NODES CREATED\n")
+println("\n NODES CREATED\n")
 
 # Create Edges
 for (key, value) in connectivity
@@ -57,11 +57,13 @@ for (key, value) in connectivity
     end
 end
 
-# println("\n EDGES CREATED\n")
+println("\n EDGES CREATED\n")
 
 nRooms = Graphs.nv(buildNetwork);
 nWalls = Graphs.ne(buildNetwork);
 
+# TODO: move drawing connectivity graph to a separate script to run before thermal model calculations
+# OR move web app visualization to AFTER wall scaling & wall thickness is collected
 using GraphPlot, Colors
 nodefillc = distinguishable_colors(nRooms, colorant"blue")
 nodelabel = 0:nRooms-1
