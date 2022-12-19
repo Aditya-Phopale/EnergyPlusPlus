@@ -118,7 +118,7 @@ proportional_const = 15.0 # m_dot * Cp_air
 prop_const = zeros(nRooms, 1)
 prop_const[4] = proportional_const
 
-@named Room_array 1:nRooms i -> Room_component(; Croom = buildNetwork[MetaGraphsNext.label_for( buildNetwork, i)].Vol * rho * Cp, V_heating, V_desired, proportional_const)
+@named Room_array 1:nRooms i -> Room_component_pid(; Croom = buildNetwork[MetaGraphsNext.label_for( buildNetwork, i)].Vol * rho * Cp, V_heating, V_desired, proportional_const)
 
 # Define capacitance for rooms
 for i in 1:nRooms
