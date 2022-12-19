@@ -1,7 +1,6 @@
 import * as React from "react"
 import { Link } from "gatsby"
 import { useState, useEffect} from 'react'
-import { StaticImage } from "gatsby-plugin-image"
 
 
 import Layout from "../components/layout"
@@ -37,6 +36,27 @@ export const Start = () => {
       setSelectedFile(e.target.files[0])
   }
 
+  const sendImage = () => {
+    if (!selectedFile) {
+      console.log("no file selected");
+      return;
+    }
+    var image = document.getElementById("image-input");
+
+    const Http = new XMLHttpRequest();
+    const url='http://localhost:6969/image/' + selectedFile.name;
+    console.log("configured a request to " + url);
+    console.log("sending " + image.toString());
+    console.log("sending " + preview.toString());
+    // console.log("file " + selectedFile);
+    Http.open("PUT", url, true);  // async image sending
+    Http.send(image.toString());
+    
+    Http.onreadystatechange = () => {
+      console.log(Http.responseText)
+    }
+  }
+
   return (
      <Layout>
     <div className="container text-center my-5">
@@ -46,7 +66,7 @@ export const Start = () => {
       <input className="form-control" type ="file" id="image-input" accept="image/jpeg, image/png, image/jpg"  onChange={onSelectFile}/>
       {selectedFile &&  <img src={preview} height={600} /> }
       <div className="row">
-        <Link to="/statistics/" className="btn btn-primary my-2">Recognize my rooms</Link>
+        <Link to="/statistics/" className="btn btn-primary my-2" onClick={sendImage}>Recognize my rooms</Link>
         <Link to="/" className="btn btn-secondary my-2">Home</Link>
       </div>
     </div>
