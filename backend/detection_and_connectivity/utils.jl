@@ -13,7 +13,7 @@ using Compose, Cairo
 
 
 ## Three Port for Room component with PID control for heating
-function ThreePort_Room_pid(; name, v1_start = 273.0, v2_start = 0.0, i1_start = 0.0, i2_start = 0.0, i3_start = 0.0)
+function ThreePort_Room_pid(; name, v1_start = 283.0, v2_start = 0.0, i1_start = 0.0, i2_start = 0.0, i3_start = 0.0)
 @named p = Pin()
 @named n1 = Pin()
 @named n2 = Pin()
@@ -35,7 +35,7 @@ eqs = [v1 ~ p.v - n1.v
        i2 ~ n1.i
        i3 ~ n2.i
       ]
-return compose(ODESystem(eqs, t, sts, []; name = name), p, n1, n2)
+return ModelingToolkit.compose(ODESystem(eqs, t, sts, []; name = name), p, n1, n2)
 end
 
 ## Three Port for Room component with On/Off Thermostat control 
@@ -140,10 +140,10 @@ function Room_component_pid(; name, Croom, V_heating, V_desired, proportional_co
     end
 
     room_eqs = [
-            i3 ~ -250* error - 0.15* errorsum + 100*D(v1)
-            error ~ V_desired - v1
+            i3 ~ (-250* error - 0.15* errorsum + 100*i2/Croom) * proportional_const
+            error ~ (V_desired - v1) * proportional_const
             D(v1) ~ i2/Croom
-            D(errorsum) ~ error   
+            D(errorsum) ~ error * proportional_const
         ]
     extend(ODESystem(room_eqs, t, [], pars; name = name), threeport_room)   
 
