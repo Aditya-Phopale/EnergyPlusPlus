@@ -84,7 +84,7 @@ function ThreePort_Room(; name, v1_start = 273.0, v2_start = 0.0, i1_start = 0.0
         i1(t) = i1_start
         i2(t) = i2_start
         i3(t) = i3_start
-        # ifcond(t) = false
+        ifcond(t) = false
         error(t) = 0.0
         errorsum(t) = 0.0
         
@@ -124,30 +124,30 @@ end
 
 # end
 
-function Room_component(; name, Croom, V_heating, V_desired, proportional_const)
+function Room_component(; name, Croom, V_heating, proportional_const)
     @named threeport_room = ThreePort_Room()
-    @unpack v1,v2,i1,i2,i3,error,errorsum = threeport_room
+    @unpack v1,v2,i1,i2,i3,ifcond,error,errorsum = threeport_room
 
     pars = @parameters begin 
         V_heating = V_heating
-        V_desired = V_desired
+        # V_desired = V_desired
         proportional_const = proportional_const
         Croom = Croom
     end
 
-    # continuous_events = [
-    #     (t - 50000 ~ 0) => [V_desired ~ 298.0]
-    #     # (v1 - V_desired ~ -1) => [ifcond ~ false]
-    # ]
+    continuous_events = [
+        (50000 - t ~ 0) => [ifcond ~ true, errorsum ~ 0]
+        # (v1 - V_desired ~ -1) => [ifcond ~ false]
+    ]
 
     room_eqs = [
             i3 ~ -250* error - 0.15* errorsum + 100*D(v1)#IfElse.ifelse(ifcond == true, 0, proportional_const*(v1 - V_heating))
-            error ~ V_desired - v1
+            error ~ IfElse.ifelse(ifcond == true, 290.0 - v1, 298.0 - v1)
             D(v1) ~ i2/Croom
             D(errorsum) ~ error 
-            # D(ifcond) ~ 0   
+            D(ifcond) ~ 0   
         ]
-    extend(ODESystem(room_eqs, t, [], pars; name = name), threeport_room)   
+    extend(ODESystem(room_eqs, t, [], pars; name = name, continuous_events), threeport_room)   
 
 end
 
@@ -175,8 +175,8 @@ end
 @named wall2 = wall_2R1C(; R1, R2, C)
 @named wall3 = wall_2R1C(; R1, R2, C)
 @named wall4 = wall_2R1C(; R1, R2, C)
-# @named room = Room_component(; Croom, V_heating, proportional_const)
-@named room = Room_component(; Croom, V_heating, V_desired, proportional_const)
+@named room = Room_component(; Croom, V_heating, proportional_const)
+# @named room = Room_component(; Croom, V_heating, V_desired, proportional_const)
 
 eqs = [
     connect(room.p, wall1.p1, wall2.p1, wall3.p1, wall4.p1)
@@ -196,10 +196,10 @@ xlabel!(p, "Time (sec)")
 ylabel!(p, "Temperature (K)")
 
 
-y=293.0*ones(length(sol))
-z=294.0*ones(length(sol))
-plot!(sol.t,z)
-plot!(sol.t,y, labels="Desired Temperature")
+y=290.0*ones(length(sol))
+z=298.0*ones(length(sol))
+plot!(sol.t,z, labels="Initial Desired Temperature")
+plot!(sol.t,y, labels="Final Desired Temperature")
 #plot(sol, vars = [capacitor_room.v, wall.vc], title = "Single-Layer Wall Model (2R1C) Circuit Demonstration", labels = ["Room Temperature" "Wall Temperature"])
 
 
