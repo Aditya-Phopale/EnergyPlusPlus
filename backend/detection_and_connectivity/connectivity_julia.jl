@@ -114,11 +114,11 @@ rho = 1.225 # Kg/m3
 Cp = 1000 #J/Kg/K
 V_heating = 323.0 # Temperature heating fluid
 V_desired = 293.0 # desired Temperature
-proportional_const = 15.0 # m_dot * Cp_air
+proportional_const = 1.0 # m_dot * Cp_air
 prop_const = zeros(nRooms, 1)
 prop_const[4] = proportional_const
 
-@named Room_array 1:nRooms i -> Room_component(; Croom = buildNetwork[MetaGraphsNext.label_for( buildNetwork, i)].Vol * rho * Cp, V_heating, V_desired, proportional_const)
+@named Room_array 1:nRooms i -> Room_component_pid(; Croom = buildNetwork[MetaGraphsNext.label_for( buildNetwork, i)].Vol * rho * Cp, V_heating, V_desired, proportional_const = prop_const[i])
 
 # Define capacitance for rooms
 for i in 1:nRooms
@@ -159,7 +159,10 @@ println("Executed successfully")
 Plots.plot()
 
 for i in 1:nRooms
-   Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i), legend=:bottomleft)
+   Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i), linewidth=3, fontsize=14, legend=:topright)
+   #if i==4
+   #Plots.plot!(sol, vars = [Room_array[i].i3], labels = "", linewidth=3, fontsize=14, legend=:bottomright)
+   #end
    # text = "Room_"*string(i)*"_"*"Prototype_Model_Simple.png"
    # savefig(text)
 end
