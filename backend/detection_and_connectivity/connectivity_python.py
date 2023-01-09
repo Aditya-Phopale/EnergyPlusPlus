@@ -36,7 +36,7 @@ path = cv2.imread(path)
 
 # Loading model with the best run so far
 
-model = torch.hub.load('ultralytics/yolov5', 'custom', 'best.pt',)
+model = torch.hub.load('ultralytics/yolov5', 'custom', 'best.pt')
 model.conf = 0.52
 
 
@@ -138,7 +138,6 @@ for i in range(len(entity_labels)):
 temp = result_val[0]
 # array to store the centers of all bounding boxes - used later for labels
 centers = []
-
 # Finding connectivity and storing every connection with attributes of each room
 for i in range(len(temp)):
     
@@ -154,15 +153,17 @@ for i in range(len(temp)):
     volume = area * height
     connectivity[entity_labels[i]]["area"] = area
     connectivity[entity_labels[i]]["volume"] = volume
+
+    # Storing total bounding box length(perimeter) to calculate length of wall exposed to outside atmosphere
+    perimeter = 2*((x1max - x1min) + (y1max - y1min))
+    overall_overlap = 0.0
     # Comparing i th element with all others
-    for j in range (i,len(temp)):
+    for j in range(len(temp)):
         if i!=j:
             x2min, y2min, x2max, y2max = temp[j][0].item(), temp[j][1].item(), temp[j][2].item(), temp[j][3].item()
             # x2c, y2c = (x2min+x2max)/2 , (y2min + y2max)/2  
-            # check for neighbors and add only if it has not been added yet           
-            if entity_labels[j] not in connectivity[entity_labels[i]]["neighbors"]:
-                # check if the box i and j overlap on the "right" by offset amounts
-                if abs(x1max - x2min)<=offset:
+            # check if the box i and j overlap on the "right" by offset amounts
+            if abs(x1max - x2min)<=offset:
                     # standard iou technique - calculate overlap
                     overlap = abs(min(y1max,y2max) - max(y1min, y2min))
                     union = y1max - y1min + y2max - y2min - overlap
@@ -170,37 +171,57 @@ for i in range(len(temp)):
                     intersection = overlap/union
                     #print("right", intersection)
                     if intersection>IOU:
+                        # check for neighbors and add only if it has not been added yet  
+                        if entity_labels[i] not in connectivity[entity_labels[j]]["neighbors"] and entity_labels[j] not in connectivity[entity_labels[i]]["neighbors"]:
                             connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
                             connectivity[entity_labels[i]]["wall"].append(overlap/y_factor)
+                        
+                        overall_overlap = overall_overlap + overlap
                 # check for left neighbors
-                if abs(x1min - x2max)<=offset:
+            if abs(x1min - x2max)<=offset:
                     overlap = abs(min(y1max,y2max) - max(y1min, y2min))
                     union = y1max - y1min + y2max - y2min - overlap
                     intersection = overlap/union
                     #print("left", intersection)
                     if intersection>IOU:
+                        # check for neighbors and add only if it has not been added yet  
+                        if entity_labels[i] not in connectivity[entity_labels[j]]["neighbors"] and entity_labels[j] not in connectivity[entity_labels[i]]["neighbors"]:
                             connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
                             connectivity[entity_labels[i]]["wall"].append(overlap//y_factor)
+                            
+                        overall_overlap = overall_overlap + overlap
                 # check for top neighbors          
-                if abs(y1max - y2min)<=offset:
+            if abs(y1max - y2min)<=offset:
                     overlap = abs(min(x1max,x2max) - max(x1min, x2min))
                     union = x1max - x1min + x2max - x2min - overlap
                     intersection = overlap/union 
                     #print("top", intersection)
                     if intersection>IOU:
+                        # check for neighbors and add only if it has not been added yet  
+                        if entity_labels[i] not in connectivity[entity_labels[j]]["neighbors"] and entity_labels[j] not in connectivity[entity_labels[i]]["neighbors"]:
                             connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
                             connectivity[entity_labels[i]]["wall"].append(overlap/x_factor)
+                            
+                        overall_overlap = overall_overlap + overlap
                 # check for bottom neighbors
-                if abs(y1min - y2max)<=offset:
+            if abs(y1min - y2max)<=offset:
                     overlap = abs(min(x1max,x2max) - max(x1min, x2min))
                     union = x1max - x1min + x2max - x2min - overlap
                     intersection = overlap/union
                     #print("bottom", intersection)
-                    if intersection>IOU:   
+                    if intersection>IOU: 
+                        # check for neighbors and add only if it has not been added yet  
+                        if entity_labels[i] not in connectivity[entity_labels[j]]["neighbors"] and entity_labels[j] not in connectivity[entity_labels[i]]["neighbors"]:  
                             connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
                             connectivity[entity_labels[i]]["wall"].append(overlap/x_factor)
+                            
+                        overall_overlap = overall_overlap + overlap
+            
+    if overall_overlap < perimeter:
+                    connectivity[entity_labels[i]]["neighbors"].append("roomo")
+                    connectivity[entity_labels[i]]["wall"].append((perimeter - overall_overlap)/x_factor)        
+                
 # Rendering the image with bounding boxes
-
 result.render(labels=True)
 result.save(labels=True, save_dir="./")
 os.system("cp './.2/image0.jpg' image0.jpg")
