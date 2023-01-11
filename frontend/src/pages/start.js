@@ -41,16 +41,19 @@ export const Start = () => {
       console.log("no file selected");
       return;
     }
-    var image = document.getElementById("image-input");
+    var file = document.getElementById("image-input").files[0];
+    var reader = new FileReader();
 
     const Http = new XMLHttpRequest();
     const url='http://localhost:6969/image/' + selectedFile.name;
     console.log("configured a request to " + url);
-    console.log("sending " + image.toString());
-    console.log("sending " + preview.toString());
-    // console.log("file " + selectedFile);
-    Http.open("PUT", url, true);  // async image sending
-    Http.send(image.toString());
+
+    reader.onloadend = function() {
+      console.log("sending", reader.result)
+      Http.open("PUT", url, false);  // true for async image sending
+      Http.send(reader.result);
+    }
+    reader.readAsDataURL(file);
     
     Http.onreadystatechange = () => {
       console.log(Http.responseText)
