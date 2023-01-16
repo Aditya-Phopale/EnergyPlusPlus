@@ -8,7 +8,7 @@ import {Seo} from "../components/seo"
 
 
 //https://stackoverflow.com/questions/38049966/get-image-preview-before-uploading-in-react+
-export const Start = () => {
+const Start = () => {
   const [selectedFile, setSelectedFile] = useState()
   const [preview, setPreview] = useState()
 
@@ -64,7 +64,7 @@ export const Start = () => {
       <p> To start the process and save energy, upload the image of your floorplan here.</p>
       
       <input className="form-control" type ="file" id="image-input" accept="image/jpeg, image/png, image/jpg"  onChange={onSelectFile}/>
-      {selectedFile &&  <img src={preview} height={600} /> }
+      {selectedFile &&  <img src={preview} height={600} alt ={"uploaded building plan"}/> }
       <div className="row">
         <Link to="/statistics/" className="btn btn-primary my-2" onClick={sendImage}>Recognize my rooms</Link>
         <Link to="/" className="btn btn-secondary my-2">Home</Link>
