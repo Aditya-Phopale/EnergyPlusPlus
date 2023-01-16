@@ -108,7 +108,7 @@ result_val = result.pred
 entity_labels = []
 
 # indices for elements
-room_count = 0
+room_count = 1
 window_count = 0
 door_count = 0
 
@@ -218,7 +218,7 @@ for i in range(len(temp)):
                         overall_overlap = overall_overlap + overlap
             
     if overall_overlap < perimeter:
-                    connectivity[entity_labels[i]]["neighbors"].append("roomo")
+                    connectivity[entity_labels[i]]["neighbors"].append("room0")
                     connectivity[entity_labels[i]]["wall"].append((perimeter - overall_overlap)/x_factor)        
                 
 # Rendering the image with bounding boxes
@@ -242,5 +242,5 @@ display(PIL.Image.open("image0.png"))
 with open("connectivity.json","w+") as f:
     json.dump(connectivity,f)
 print("GRAPH WRITTEN TO JSON file")
-j = julia.Julia(compiled_modules=False)
-x = j.include("Graph/firstGraph.jl")
+# j = julia.Julia(compiled_modules=False)
+# x = j.include("Graph/firstGraph.jl")
