@@ -50,8 +50,9 @@ export const Start = () => {
 
     reader.onloadend = function() {
       console.log("sending", reader.result)
-      Http.open("PUT", url, false);  // true for async image sending
-      Http.send(reader.result);
+      Http.open("POST", url, false);  // true for async image sending
+      Http.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+      Http.send("picture=" + reader.result.toString());
     }
     reader.readAsDataURL(file);
     

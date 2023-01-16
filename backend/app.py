@@ -19,11 +19,11 @@ rc_data = dict()
 loading_image = Image.open("detection_and_connectivity/loading.png")
 
 
-@app.route('/image/<picture_id>', methods = ['PUT'])
+@app.route('/image/<picture_id>', methods = ['POST'])
 def callback(picture_id):
-    if request.method == "PUT":
+    if request.method == "POST":
         # extract an image from the request
-        received_data = request.get_json()
+        received_data = request.form["picture"]
         floor_plan = dt.msg_to_png(received_data)
         print("received a new floor " + str(picture_id))
         # run yolo v5 simulation
