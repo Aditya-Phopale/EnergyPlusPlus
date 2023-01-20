@@ -58,11 +58,11 @@ export const Start = () => {
         <br />
         <div className="row">
           <Link to="/verification/" className="btn btn-primary my-2" onChange={sendStatistics}>
-            Recognize my rooms
+            Continue
           </Link>
-          <Link to="/" className="btn btn-secondary my-2">
+{/*          <Link to="/" className="btn btn-secondary my-2">
             Home
-          </Link>
+          </Link>*/}
         </div>
       </div>
     </Layout>
