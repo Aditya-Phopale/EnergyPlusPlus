@@ -140,7 +140,7 @@ function Room_component_pid(; name, Croom, V_heating, V_desired, proportional_co
     end
 
     room_eqs = [
-            i3 ~ (-250* error - 0.15* errorsum + 100*i2/Croom) * proportional_const
+            i3 ~ max(-900, min(0,(-250* error - 0.15* errorsum + 100*i2/Croom) * proportional_const))
             error ~ (V_desired - v1) * proportional_const
             D(v1) ~ i2/Croom
             D(errorsum) ~ error * proportional_const
