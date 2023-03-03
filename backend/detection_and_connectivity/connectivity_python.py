@@ -105,25 +105,108 @@ def add_labels(result_array):
     """
     # Name of elements in the image - room/windows/doors etc
     # indices for elements
-    entity_labels = []
+    labels = []
     room_count = 1
     window_count = 0
     door_count = 0
     # Add element names to the labels
     for row in result_array[0]:
         if int(row[-1]) == 0:
-            entity_labels.append("room" + str(room_count))
+            labels.append("room" + str(room_count))
             room_count += 1
         elif int(row[-1]) == 1:
-            entity_labels.append("window" + str(window_count))
+            labels.append("window" + str(window_count))
             window_count += 1
         else:
-            entity_labels.append("door" + str(door_count))
+            labels.append("door" + str(door_count))
             door_count += 1
 
     # reversing the list to make it consistent with detect.py results from the yolov5
-    entity_labels = list(reversed(entity_labels))
-    return entity_labels
+    labels = list(reversed(labels))
+    return labels
+
+
+def add_ambient_node(connectivity, current_room_component, wall_length):
+    connectivity[current_room_component]["neighbors"].append("room0")
+    connectivity[current_room_component]["wall"].append(wall_length)
+
+
+def connect_neighbors(
+    connectivity,
+    current_coordinates,
+    neighbor_coordinates,
+    current_room_components,
+    neighbor_room_components,
+    mult_factors,
+):
+    """
+    Connect one room with all of its neighbors.
+
+    Args:
+        directions list[str]: list of directions
+        connectivity dict: Connectivity dictionary
+        current_coordinates tuple(int): current xmin, ymin, xmax
+        and ymax
+        neighbor_coordinates tuple(int): potential Neighbor xmin,
+        ymin, xmax, ymax
+        current_room_components list: All components of room including its
+        name and area,vol etc.
+        neighbor_room_components list: All components of room including its
+        name and area,vol etc.
+        mult_factors list: Scaling factor in x and y direction
+
+    Returns:
+        overall_overlap: _description_
+    """
+    directions = ["right", "left", "top", "bottom"]
+    # percentage of overlap above which the rooms are considered neighbors
+    IOU = 0.2
+    # orthogonal overlap
+    offset = 200.0
+    x1min, y1min, x1max, y1max = current_coordinates
+    x2min, y2min, x2max, y2max = neighbor_coordinates
+    offset = 200.0
+    IOU = 0.2
+    one_side_overlap = 0.0
+    for idx, direction in enumerate(directions):
+        overlap = 0.0
+        union = -1.0
+        if direction == "right":
+            offset_x = x1max - x2min
+            offset_y = 0
+        if direction == "left":
+            offset_x = x1min - x2max
+            offset_y = 0
+        if direction == "top":
+            offset_x = 0
+            offset_y = y1max - y2min
+        if direction == "bottom":
+            offset_x = 0
+            offset_y = y1min - y2max
+        if abs(offset_x) <= offset or abs(offset_y) <= offset:
+            if abs(offset_x) > 0 and abs(offset_x) <= offset:
+                overlap = abs(min(y1max, y2max) - max(y1min, y2min))
+                union = y1max - y1min + y2max - y2min - overlap
+            if abs(offset_y) > 0 and abs(offset_y) <= offset:
+                overlap = abs(min(x1max, x2max) - max(x1min, x2min))
+                union = x1max - x1min + x2max - x2min - overlap
+            intersection = overlap / union
+            if intersection > IOU:
+                # check for neighbors and add only if it has not been added yet
+                if (
+                    current_room_components
+                    not in connectivity[neighbor_room_components]["neighbors"]
+                    and neighbor_room_components
+                    not in connectivity[current_room_components]["neighbors"]
+                ):
+                    connectivity[current_room_components]["neighbors"].append(
+                        neighbor_room_components
+                    )
+                    connectivity[current_room_components]["wall"].append(
+                        overlap / mult_factors[idx]
+                    )
+                    one_side_overlap += overlap
+    return one_side_overlap
 
 
 def connect_all(result):
@@ -138,10 +221,6 @@ def connect_all(result):
         tuple[dict, list, list]: A tuple with connectivity dictionary, the entity labels
         list and the list of center of each element
     """
-    # percentage of overlap above which the rooms are considered neighbors
-    IOU = 0.2
-    # orthogonal overlap
-    offset = 200.0
     # multiplication factor between pixels and image - empirically calculated for now
     x_factor = 1.68 * 100
     y_factor = 1.685 * 100
@@ -169,18 +248,12 @@ def connect_all(result):
     # Finding connectivity and storing every connection with attributes of each room
     for i, current_room in enumerate(all_rooms):
         # coordinates of the bounding box of the single image to be matched against all others
-        x1min, y1min, x1max, y1max = (
+        current_coordinates = x1min, y1min, x1max, y1max = (
             current_room[0].item(),
             current_room[1].item(),
             current_room[2].item(),
             current_room[3].item(),
         )
-        # centre of the bounding box
-        x1c, y1c = (x1min + x1max) / 2, (y1min + y1max) / 2
-        # collecting centers of each bounding box
-        if (x1c, y1c) not in centers:
-            centers.append((x1c, y1c))
-        # area and volume of the room to be matched
         area = ((x1max - x1min) * (y1max - y1min)) / area_factor
         volume = area * height
         connectivity[entity_labels[i]]["area"] = area
@@ -191,7 +264,7 @@ def connect_all(result):
         # Comparing i th element with all others
         for j, potential_neighbor in enumerate(all_rooms):
             if i != j:
-                x2min, y2min, x2max, y2max = (
+                neighbor_coordinates = (
                     potential_neighbor[0].item(),
                     potential_neighbor[1].item(),
                     potential_neighbor[2].item(),
@@ -199,52 +272,21 @@ def connect_all(result):
                 )
                 # x2c, y2c = (x2min+x2max)/2 , (y2min + y2max)/2
                 # check if the box i and j overlap on the "right" by offset amounts
-                neighbors = ["right", "left", "top", "bottom"]
                 mult_factors = [y_factor, y_factor, x_factor, x_factor]
-                overlap = 0
-                union = -1
-                for idx, neighbor in enumerate(neighbors):
-                    if neighbor == "right":
-                        offset_x = x1max - x2min
-                        offset_y = 0
-                    if neighbor == "left":
-                        offset_x = x1min - x2max
-                        offset_y = 0
-                    if neighbor == "top":
-                        offset_x = 0
-                        offset_y = y1max - y2min
-                    if neighbor == "bottom":
-                        offset_x = 0
-                        offset_y = y1min - y2max
-                    if abs(offset_x) <= offset or abs(offset_y) <= offset:
-                        if abs(offset_x) > 0:
-                            overlap = abs(min(y1max, y2max) - max(y1min, y2min))
-                            union = y1max - y1min + y2max - y2min - overlap
-                        if abs(offset_y) > 0:
-                            overlap = abs(min(x1max, x2max) - max(x1min, x2min))
-                            union = x1max - x1min + x2max - x2min - overlap
-                        intersection = overlap / union
-                        if intersection > IOU:
-                            # check for neighbors and add only if it has not been added yet
-                            if (
-                                entity_labels[i]
-                                not in connectivity[entity_labels[j]]["neighbors"]
-                                and entity_labels[j]
-                                not in connectivity[entity_labels[i]]["neighbors"]
-                            ):
-                                connectivity[entity_labels[i]]["neighbors"].append(
-                                    entity_labels[j]
-                                )
-                                connectivity[entity_labels[i]]["wall"].append(
-                                    overlap / mult_factors[idx]
-                                )
-
-                                overall_overlap += overlap
+                current_room_components = entity_labels[i]
+                neighbor_room_components = entity_labels[j]
+                overall_overlap += connect_neighbors(
+                    connectivity,
+                    current_coordinates,
+                    neighbor_coordinates,
+                    current_room_components,
+                    neighbor_room_components,
+                    mult_factors,
+                )
+        print(perimeter)
         if overall_overlap < perimeter:
-            connectivity[entity_labels[i]]["neighbors"].append("room0")
-            connectivity[entity_labels[i]]["wall"].append(
-                (perimeter - overall_overlap) / x_factor
-            )
+            wall_length = (perimeter - overall_overlap) / x_factor
+            add_ambient_node(connectivity, current_room_components, wall_length)
     return connectivity, entity_labels, centers
 
 
