@@ -127,6 +127,14 @@ def add_labels(result_array):
 
 
 def add_ambient_node(connectivity, current_room_component, wall_length):
+    """
+    Add ambient node if the outer wall is exposed significantly.
+
+    Args:
+        connectivity dict: Connectivity dictionary
+        current_room_component list: list of all components of the current room
+        wall_length float: length of wall exposed to ambient condition
+    """
     connectivity[current_room_component]["neighbors"].append("room0")
     connectivity[current_room_component]["wall"].append(wall_length)
 
@@ -165,8 +173,6 @@ def connect_neighbors(
     offset = 200.0
     x1min, y1min, x1max, y1max = current_coordinates
     x2min, y2min, x2max, y2max = neighbor_coordinates
-    offset = 200.0
-    IOU = 0.2
     one_side_overlap = 0.0
     for idx, direction in enumerate(directions):
         overlap = 0.0
@@ -205,7 +211,8 @@ def connect_neighbors(
                     connectivity[current_room_components]["wall"].append(
                         overlap / mult_factors[idx]
                     )
-                    one_side_overlap += overlap
+                one_side_overlap += overlap
+    print(one_side_overlap)
     return one_side_overlap
 
 
@@ -283,7 +290,7 @@ def connect_all(result):
                     neighbor_room_components,
                     mult_factors,
                 )
-        print(perimeter)
+        print(perimeter, overall_overlap)
         if overall_overlap < perimeter:
             wall_length = (perimeter - overall_overlap) / x_factor
             add_ambient_node(connectivity, current_room_components, wall_length)
