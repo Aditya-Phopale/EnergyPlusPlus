@@ -164,17 +164,16 @@ def connect_all(result):
     connectivity = set_attributes(entity_labels)
     # access the numpy array of results - result_val is a list with length 1 - the 0th element is the prediction
     all_rooms = result_array[0]
-
     # array to store the centers of all bounding boxes - used later for labels
     centers = []
     # Finding connectivity and storing every connection with attributes of each room
-    for i, one_room in enumerate(all_rooms):
+    for i, current_room in enumerate(all_rooms):
         # coordinates of the bounding box of the single image to be matched against all others
         x1min, y1min, x1max, y1max = (
-            one_room[0].item(),
-            one_room[1].item(),
-            one_room[2].item(),
-            one_room[3].item(),
+            current_room[0].item(),
+            current_room[1].item(),
+            current_room[2].item(),
+            current_room[3].item(),
         )
         # centre of the bounding box
         x1c, y1c = (x1min + x1max) / 2, (y1min + y1max) / 2
@@ -186,111 +185,61 @@ def connect_all(result):
         volume = area * height
         connectivity[entity_labels[i]]["area"] = area
         connectivity[entity_labels[i]]["volume"] = volume
-
         # Storing total bounding box length(perimeter) to calculate length of wall exposed to outside atmosphere
         perimeter = 2 * ((x1max - x1min) + (y1max - y1min))
         overall_overlap = 0.0
         # Comparing i th element with all others
-        for j, one_room in enumerate(all_rooms):
+        for j, potential_neighbor in enumerate(all_rooms):
             if i != j:
                 x2min, y2min, x2max, y2max = (
-                    one_room[0].item(),
-                    one_room[1].item(),
-                    one_room[2].item(),
-                    one_room[3].item(),
+                    potential_neighbor[0].item(),
+                    potential_neighbor[1].item(),
+                    potential_neighbor[2].item(),
+                    potential_neighbor[3].item(),
                 )
                 # x2c, y2c = (x2min+x2max)/2 , (y2min + y2max)/2
                 # check if the box i and j overlap on the "right" by offset amounts
-                if abs(x1max - x2min) <= offset:
-                    # standard iou technique - calculate overlap
-                    overlap = abs(min(y1max, y2max) - max(y1min, y2min))
-                    union = y1max - y1min + y2max - y2min - overlap
-                    # the percentage of overlap is above IOU, consider it a true neighbor
-                    intersection = overlap / union
-                    # print("right", intersection)
-                    if intersection > IOU:
-                        # check for neighbors and add only if it has not been added yet
-                        if (
-                            entity_labels[i]
-                            not in connectivity[entity_labels[j]]["neighbors"]
-                            and entity_labels[j]
-                            not in connectivity[entity_labels[i]]["neighbors"]
-                        ):
-                            connectivity[entity_labels[i]]["neighbors"].append(
-                                entity_labels[j]
-                            )
-                            connectivity[entity_labels[i]]["wall"].append(
-                                overlap / y_factor
-                            )
+                neighbors = ["right", "left", "top", "bottom"]
+                mult_factors = [y_factor, y_factor, x_factor, x_factor]
+                overlap = 0
+                union = -1
+                for idx, neighbor in enumerate(neighbors):
+                    if neighbor == "right":
+                        offset_x = x1max - x2min
+                        offset_y = 0
+                    if neighbor == "left":
+                        offset_x = x1min - x2max
+                        offset_y = 0
+                    if neighbor == "top":
+                        offset_x = 0
+                        offset_y = y1max - y2min
+                    if neighbor == "bottom":
+                        offset_x = 0
+                        offset_y = y1min - y2max
+                    if abs(offset_x) <= offset or abs(offset_y) <= offset:
+                        if abs(offset_x) > 0:
+                            overlap = abs(min(y1max, y2max) - max(y1min, y2min))
+                            union = y1max - y1min + y2max - y2min - overlap
+                        if abs(offset_y) > 0:
+                            overlap = abs(min(x1max, x2max) - max(x1min, x2min))
+                            union = x1max - x1min + x2max - x2min - overlap
+                        intersection = overlap / union
+                        if intersection > IOU:
+                            # check for neighbors and add only if it has not been added yet
+                            if (
+                                entity_labels[i]
+                                not in connectivity[entity_labels[j]]["neighbors"]
+                                and entity_labels[j]
+                                not in connectivity[entity_labels[i]]["neighbors"]
+                            ):
+                                connectivity[entity_labels[i]]["neighbors"].append(
+                                    entity_labels[j]
+                                )
+                                connectivity[entity_labels[i]]["wall"].append(
+                                    overlap / mult_factors[idx]
+                                )
 
-                        overall_overlap = overall_overlap + overlap
-                # check for left neighbors
-                if abs(x1min - x2max) <= offset:
-                    overlap = abs(min(y1max, y2max) - max(y1min, y2min))
-                    union = y1max - y1min + y2max - y2min - overlap
-                    intersection = overlap / union
-                    # print("left", intersection)
-                    if intersection > IOU:
-                        # check for neighbors and add only if it has not been added yet
-                        if (
-                            entity_labels[i]
-                            not in connectivity[entity_labels[j]]["neighbors"]
-                            and entity_labels[j]
-                            not in connectivity[entity_labels[i]]["neighbors"]
-                        ):
-                            connectivity[entity_labels[i]]["neighbors"].append(
-                                entity_labels[j]
-                            )
-                            connectivity[entity_labels[i]]["wall"].append(
-                                overlap // y_factor
-                            )
-
-                        overall_overlap = overall_overlap + overlap
-                # check for top neighbors
-                if abs(y1max - y2min) <= offset:
-                    overlap = abs(min(x1max, x2max) - max(x1min, x2min))
-                    union = x1max - x1min + x2max - x2min - overlap
-                    intersection = overlap / union
-                    # print("top", intersection)
-                    if intersection > IOU:
-                        # check for neighbors and add only if it has not been added yet
-                        if (
-                            entity_labels[i]
-                            not in connectivity[entity_labels[j]]["neighbors"]
-                            and entity_labels[j]
-                            not in connectivity[entity_labels[i]]["neighbors"]
-                        ):
-                            connectivity[entity_labels[i]]["neighbors"].append(
-                                entity_labels[j]
-                            )
-                            connectivity[entity_labels[i]]["wall"].append(
-                                overlap / x_factor
-                            )
-
-                        overall_overlap = overall_overlap + overlap
-                # check for bottom neighbors
-                if abs(y1min - y2max) <= offset:
-                    overlap = abs(min(x1max, x2max) - max(x1min, x2min))
-                    union = x1max - x1min + x2max - x2min - overlap
-                    intersection = overlap / union
-                    # print("bottom", intersection)
-                    if intersection > IOU:
-                        # check for neighbors and add only if it has not been added yet
-                        if (
-                            entity_labels[i]
-                            not in connectivity[entity_labels[j]]["neighbors"]
-                            and entity_labels[j]
-                            not in connectivity[entity_labels[i]]["neighbors"]
-                        ):
-                            connectivity[entity_labels[i]]["neighbors"].append(
-                                entity_labels[j]
-                            )
-                            connectivity[entity_labels[i]]["wall"].append(
-                                overlap / x_factor
-                            )
-
-                        overall_overlap = overall_overlap + overlap
-
+                                overall_overlap += overlap
         if overall_overlap < perimeter:
             connectivity[entity_labels[i]]["neighbors"].append("room0")
             connectivity[entity_labels[i]]["wall"].append(
@@ -345,8 +294,8 @@ if __name__ == "__main__":
     result = detect_rooms(image_path, model_path)
     # bb_dataframe = result.pandas().xyxy[0]
     connectivity_dict, entity_labels, centers = connect_all(result)
-    save_result(result, connectivity_dict, entity_labels, centers, saved_path)
+    # comment this out if only json is required - does not effect json results
+    # save_result(result, connectivity_dict, entity_labels, centers, saved_path)
     # comment this out to turn off image pop up
     # visualize_result(saved_path)
     write_to_json(connectivity_dict)
-	
