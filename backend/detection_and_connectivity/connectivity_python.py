@@ -4,87 +4,34 @@
 # ## Energy PLUS PLUS - ML Demo/ Graph Generation
 
 # This notebook has code for running the Energy++ ML model using yolov5 and then structuring the obtained bounding boxes into a connectivity graph.
-# 
-# In order to use this notebook, please ensure that this file is inside the yolov5 repository folder which you can clone from [here](https://github.com/ultralytics/yolov5). Also, the image that needs to be segmented needs to have the name "test.png" at the moment which ofcourse can be changed but you would have to edit the code.
-# 
+# In order to use this notebook, please ensure that this file is inside the yolov5 repository folder which you can clone from [here](https://github.com/ultralytics/yolov5). 
+# Also, the image that needs to be segmented needs to have the name "test.png" at the moment which ofcourse can be changed but you would have to edit the code.
 # Also, make sure the weights/model you wish to load is placed in yolov5/runs/train/exp/(name of your weights file .pt or .pth usually).
 
 # Importing necessary libraries
-
 import cv2
 import torch
 from IPython.display import display
 import PIL
-from PIL import Image
-import numpy
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from PIL import Image, ImageDraw, ImageFont
-from tkinter import *
+from tk import *
 import json
-import julia
 import os
 
-print("RUNNING PYTHON SCRIPT...")
-
-path ="test.png"
+path ="floor_plan.png"
 path = cv2.imread(path)
 
-
-# In[3]:
-
-
 # Loading model with the best run so far
-
 model = torch.hub.load('ultralytics/yolov5', 'custom', 'best.pt',)
 model.conf = 0.52
-
-
-# In[4]:
-
 
 # Evaluating the model on a test image
 model.eval()
 result = model(path)
 
-
-# In[5]:
-
-
-print(result)
-
-
-# In[6]:
-
-
 # Displaying the co-ordinates of the bounding boxes
 display(PIL.Image.open("test.png"))
 bb_dataframe = result.pandas().xyxy[0]
 print(bb_dataframe)
-# for idx, row in bb_dataframe.iterrows():
-#     rect = patches.Bbox([row['xmin'],row['ymin']],[row['xmax'],row['ymax']])
-#     print(row['xmin'])
-
-
-# In[7]:
-
-
-# # Extracting the classes with detected frequency
-# import numpy as np
-# co_ordinates = result.pred[0]
-# print(co_ordinates.shape)
-# new_points = []
-
-# for rows in co_ordinates:
-#     x_c = float((rows[0] + rows[2])/2)
-#     y_c = float((rows[1] + rows[3])/2)
-#     centroids = torch.tensor([x_c,y_c], device = "cuda")
-#     rows = torch.cat((rows, centroids), 0)
-#     new_points.append(rows)
-# new_points = torch.stack(new_points)
-# result.pred[0] = new_points
-
-
 
 # percentage of overlap above which the rooms are considered neighbors
 IOU = 0.2
@@ -199,27 +146,23 @@ for i in range(len(temp)):
                     if intersection>IOU:   
                             connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
                             connectivity[entity_labels[i]]["wall"].append(overlap/x_factor)
-# Rendering the image with bounding boxes
 
+# Rendering the image with bounding boxes
 result.render(labels=True)
 result.save(labels=True, save_dir="./")
-os.system("cp './.2/image0.jpg' image0.jpg")
-os.system("sudo rm -rf ./.2")
-image = PIL.Image.open("image0.jpg")
+os.system("mv './.2/image0.jpg' boxed_rooms.jpg")
+os.system("rmdir ./.2")
+image = PIL.Image.open("boxed_rooms.jpg")
 draw  = PIL.ImageDraw.Draw(image)
 font  = PIL.ImageFont.truetype("arial.ttf", 50, encoding="unic")
 for text, coordinates in zip(entity_labels, centers):
     # annotate each room and save with each annotation
     draw.text( (coordinates[0],coordinates[1]), text, font=font, fill="#0000FF")
-    image.save("image0.png","png")
+    image.save("boxed_ordered_rooms.png","png")
 draw.text([1,5000],str(connectivity), font=font, fill="#0000FF")
-image.save("image0.png","png")
-display(PIL.Image.open("image0.png"))
+image.save("boxed_ordered_rooms.png","png")
+display(PIL.Image.open("boxed_ordered_rooms.png"))
 
 # Writing connnectivity into json file
-
 with open("connectivity.json","w+") as f:
     json.dump(connectivity,f)
-print("GRAPH WRITTEN TO JSON file")
-j = julia.Julia(compiled_modules=False)
-x = j.include("Graph/firstGraph.jl")

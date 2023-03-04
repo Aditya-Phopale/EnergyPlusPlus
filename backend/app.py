@@ -1,71 +1,64 @@
 # https://tms-dev-blog.com/python-backend-with-javascript-frontend-how-to/
+# https://github.com/josephlee94/intuitive-deep-learning/blob/master/Building%20a%20Web%20Application%20to%20Deploy%20Machine%20Learning%C2%A0Models/imgrec_webapp.py
 
 from flask import Flask, request
-import flask
-import json
 from flask_cors import CORS
+from PIL import Image
 
-import time
-
-import julia    #https://stackoverflow.com/questions/49750067/running-julia-jl-file-in-python
-
-import matplotlib.pyplot as plt
 import detection_tools as dt
 
 app = Flask(__name__)
 CORS(app)
 
-rooms_image = None
-labels = None
+# buffers
+rooms_image = dict()
+connectivity = dict()
+rc_data = dict()
 
-@app.route('/image', methods=["POST"])
-def callback():
-    print("user endpoint reached...")
+# if data unavailable yet TODO
+loading_image = Image.open("detection_and_connectivity/loading.png")
+
+
+@app.route('/image/<picture_id>', methods = ['POST'])
+def callback(picture_id):
     if request.method == "POST":
-        received_data = request.get_json()
-        return_data = {
-            "status": "success"
-        }
-        print("before conversion")
-        #TODO: make the conversion work and maybe print it back
+        # extract an image from the request
+        received_data = request.form["picture"]
         floor_plan = dt.msg_to_png(received_data)
-        print("after conversion")
-        rooms_image, labels = dt.detect_rooms(floor_plan)
-        return flask.Response(response=return_data, status=201)
+        print("received a new floor " + str(picture_id))
+        # run yolo v5 simulation
+        rooms_image[picture_id] = dt.detect_rooms(floor_plan)
+        print("detected rooms on " + str(picture_id))
+        # return success
+        return flask.Response(response={"status":"success"}, status=201)
+    # operation not permitted
+    return flask.Response(status=403)
 
 
-@app.route('/rooms', methods=["GET"])
-def callback_rooms():
-    print("user endpoint rooms reached...")
-    if request.method == "GET":    
-        time.sleep(2.5)
-        return_data = {
-            #TODO: include yolov5 
-            # picture generation from yolo converted to msg
-            "status":"success"
-        }
-        print("GET request finished")
-        return flask.Response(response=return_data, status=201)
-
-@app.route('/rc', methods=["GET"])
-def callback_rc():
-    print("user endpoint rc reached...")
+@app.route('/rooms/<picture_id>')
+def callback_rooms(picture_id):
     if request.method == "GET":
-        # execute julia -> plot.png is updated 
-        # TODO: make julia work 
-        time.sleep(2.5)
-        
-        # j = julia.Julia()
-        # j.include("./2R1C_simulation/wall_function.jl")
-        print("execution of julia finished")
+        # check if rooms already saved
+        if picture_id in rooms_image:
+            return flask.Response(response=dt.png_to_msg(rooms_image[picture_id]), status=201)
+        # rooms not detected yet
+        return flask.Response(response=dt.png_to_msg(loading_image), status=201)
+    # operation not permitted
+    return flask.Response(status=403)
 
-        # return the results to frontend 
-        return_data = {
-            # picture generation from rc converted to msg
-            "status":"success"
-        }
-        print("GET request finished")
-        return flask.Response(response=return_data, status=201)
+@app.route('/rc/<picture_id>')
+def callback_rc(picture_id):
+    # assuming that user input is sequential (connectivity.json was never overwritten)
+    # TODO: make julia code receive connectivity.json as a parameter
+    if request.method == "GET":
+        # check if rc data is already in the base
+        if picture_id in rc_data:
+            return flask.Response(response=rc_data[picture_id], status=201)
+        # calculate rc modelling
+        rc_data[picture_id], connectivity[picture_id] = dt.run_thermal_model()
+        return flask.Response(response=rc_data[picture_id], status=201)
+    # operation not permitted
+    return flask.Response(status=403)
 
 if __name__ == "__main__":
     app.run("localhost", 6969)
