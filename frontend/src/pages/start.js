@@ -66,7 +66,7 @@ const Start = () => {
       <input className="form-control" type ="file" id="image-input" accept="image/jpeg, image/png, image/jpg"  onChange={onSelectFile}/>
       {selectedFile &&  <img src={preview} height={600} alt ={"uploaded building plan"}/> }
       <div className="row">
-        <Link to="/statistics/" className="btn btn-primary my-2" onClick={sendImage}>Recognize my rooms</Link>
+        <Link to="/statistics/" className="btn btn-primary my-2" onClick={sendImage}>Continue</Link>
         <Link to="/" className="btn btn-secondary my-2">Home</Link>
       </div>
     </div>

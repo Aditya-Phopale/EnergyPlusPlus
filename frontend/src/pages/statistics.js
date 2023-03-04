@@ -13,7 +13,7 @@ const sendStatistics = e => {
   // document.getElementById("scaling");
 }
 
-export const Start = () => {
+const Start = () => {
   return (
     <Layout>
       <div className="container text-center my-5">
@@ -53,7 +53,9 @@ export const Start = () => {
             max="5"
           ></input>
         </p>
+{/*
         <p>Click on a location on the map to select it (TO BE DONE)</p>
+*/}
         <br />
         <br />
         <div className="row">
