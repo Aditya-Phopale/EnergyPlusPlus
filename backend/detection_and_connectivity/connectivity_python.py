@@ -13,7 +13,8 @@ import cv2
 import torch
 from IPython.display import display
 import PIL
-from tk import *
+# from tkinter import *   # linux name
+from tk import *  # MacOS name
 import json
 import os
 
