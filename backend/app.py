@@ -11,6 +11,7 @@ app = Flask(__name__)
 CORS(app)
 
 # buffers
+base_image = dict()
 rooms_image = dict()
 connectivity = dict()
 rc_data = dict()
@@ -22,13 +23,14 @@ loading_image = Image.open("detection_and_connectivity/loading.png")
 @app.route('/image/<picture_id>', methods = ['POST'])
 def callback(picture_id):
     if request.method == "POST":
+        print("started processing " + picture_id)
         # extract an image from the request
-        received_data = request.form["picture"]
-        floor_plan = dt.msg_to_png(received_data)
-        print("received a new floor " + str(picture_id))
+        floor_plan = dt.msg_to_png(request.data)
+        base_image[picture_id] = floor_plan
+        print("received a new plan " + picture_id)
         # run yolo v5 simulation
         rooms_image[picture_id] = dt.detect_rooms(floor_plan)
-        print("detected rooms on " + str(picture_id))
+        print("detected rooms on " + picture_id)
         # return success
         return flask.Response(response={"status":"success"}, status=201)
     # operation not permitted
