@@ -13,18 +13,19 @@ import cv2
 import torch
 from IPython.display import display
 import PIL
-# from tkinter import *   # linux name
-from tk import *  # MacOS name
+from tkinter import *   # linux name
+# from tk import *  # MacOS name
 import json
 import os
 
-path ="floor_plan.png"
+os.chdir("detection_and_connectivity")
+
+path = "floor_plan.png"
 path = cv2.imread(path)
 
 # Loading model with the best run so far
 model = torch.hub.load('ultralytics/yolov5', 'custom', 'best.pt',)
 model.conf = 0.52
-
 # Evaluating the model on a test image
 model.eval()
 result = model(path)
