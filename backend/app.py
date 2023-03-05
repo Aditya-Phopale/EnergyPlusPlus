@@ -2,6 +2,7 @@
 # https://github.com/josephlee94/intuitive-deep-learning/blob/master/Building%20a%20Web%20Application%20to%20Deploy%20Machine%20Learning%C2%A0Models/imgrec_webapp.py
 
 from flask import Flask, request
+import flask
 from flask_cors import CORS
 from PIL import Image
 
@@ -20,16 +21,16 @@ rc_data = dict()
 @app.route('/image/<picture_id>', methods = ['POST'])
 def callback(picture_id):
     if request.method == "POST":
-        print("started processing " + picture_id)
+        print(" -> started processing " + picture_id)
         image_data_xml = request.data  # modify, when stats are also in this call
-        floor_plan = dt.msg_to_png(image_data_xml)
+        floor_plan = dt.msg_to_img(image_data_xml)
         base_image[picture_id] = floor_plan
 
         rooms_image[picture_id] = dt.detect_rooms(floor_plan)
-        print("detected rooms on " + picture_id)
+        print(" -> detected rooms on " + picture_id)
 
         rc_data[picture_id], connectivity[picture_id] = dt.run_thermal_model()
-        print("ran thermal modelling on " + picture_id)
+        print(" -> ran thermal modelling on " + picture_id)
 
         return flask.Response(response={"status":"success"}, status=201)
     return flask.Response(status=403)  # operation not permitted
@@ -38,8 +39,13 @@ def callback(picture_id):
 @app.route('/model/<picture_id>')
 def callback_rc(picture_id):
     if request.method == "GET":
-        modelling_data = ... # pack somehow rc_data[picture_id], rooms_image[picture_id], connectivity[picture_id]
-        return flask.Response(response=modelling_data, status=201)
+        if picture_id in rc_data:
+            # configure xml format response with 
+            modelling_data = "rc=" + dt.img_to_msg(rc_data[picture_id]) + \
+                                ";rooms_image=" + dt.img_to_msg(rooms_image[picture_id]) + \
+                                ";connectivity=" + dt.img_to_msg(connectivity[picture_id])
+            return flask.Response(response=modelling_data, status=201)
+        return flask.Response(status=201)
     return flask.Response(status=403)  # operation not permitted
 
 if __name__ == "__main__":
