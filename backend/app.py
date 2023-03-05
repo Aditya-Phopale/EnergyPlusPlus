@@ -16,51 +16,31 @@ rooms_image = dict()
 connectivity = dict()
 rc_data = dict()
 
-# if data unavailable yet TODO
-loading_image = Image.open("detection_and_connectivity/loading.png")
-
-
+# runs all of the code on a single image
 @app.route('/image/<picture_id>', methods = ['POST'])
 def callback(picture_id):
     if request.method == "POST":
         print("started processing " + picture_id)
-        # extract an image from the request
-        floor_plan = dt.msg_to_png(request.data)
+        image_data_xml = request.data  # modify, when stats are also in this call
+        floor_plan = dt.msg_to_png(image_data_xml)
         base_image[picture_id] = floor_plan
-        print("received a new plan " + picture_id)
-        # run yolo v5 simulation
+
         rooms_image[picture_id] = dt.detect_rooms(floor_plan)
         print("detected rooms on " + picture_id)
-        # return success
-        return flask.Response(response={"status":"success"}, status=201)
-    # operation not permitted
-    return flask.Response(status=403)
 
-
-@app.route('/rooms/<picture_id>')
-def callback_rooms(picture_id):
-    if request.method == "GET":
-        # check if rooms already saved
-        if picture_id in rooms_image:
-            return flask.Response(response=dt.png_to_msg(rooms_image[picture_id]), status=201)
-        # rooms not detected yet
-        return flask.Response(response=dt.png_to_msg(loading_image), status=201)
-    # operation not permitted
-    return flask.Response(status=403)
-
-@app.route('/rc/<picture_id>')
-def callback_rc(picture_id):
-    # assuming that user input is sequential (connectivity.json was never overwritten)
-    # TODO: make julia code receive connectivity.json as a parameter
-    if request.method == "GET":
-        # check if rc data is already in the base
-        if picture_id in rc_data:
-            return flask.Response(response=rc_data[picture_id], status=201)
-        # calculate rc modelling
         rc_data[picture_id], connectivity[picture_id] = dt.run_thermal_model()
-        return flask.Response(response=rc_data[picture_id], status=201)
-    # operation not permitted
-    return flask.Response(status=403)
+        print("ran thermal modelling on " + picture_id)
+
+        return flask.Response(response={"status":"success"}, status=201)
+    return flask.Response(status=403)  # operation not permitted
+
+# fetches modelling data for result page
+@app.route('/model/<picture_id>')
+def callback_rc(picture_id):
+    if request.method == "GET":
+        modelling_data = ... # pack somehow rc_data[picture_id], rooms_image[picture_id], connectivity[picture_id]
+        return flask.Response(response=modelling_data, status=201)
+    return flask.Response(status=403)  # operation not permitted
 
 if __name__ == "__main__":
     app.run("localhost", 6969)
