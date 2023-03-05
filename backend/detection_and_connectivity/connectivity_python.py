@@ -168,3 +168,5 @@ display(PIL.Image.open("boxed_ordered_rooms.png"))
 # Writing connnectivity into json file
 with open("connectivity.json","w+") as f:
     json.dump(connectivity,f)
+
+os.chdir("../")
