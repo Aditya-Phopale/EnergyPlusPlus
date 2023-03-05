@@ -1,11 +1,19 @@
 import base64
+from io import BytesIO
+import re
 import julia
 from PIL import Image
 
 BASE_PATH = "./detection_and_connectivity/"
 
-def msg_to_png(string):
-    return base64.b64decode(string)
+def msg_to_png(byte_string):
+    base_string = byte_string.decode()  # string -> bytes
+    base_string = base_string[8:]  # remove xml data format
+    base_string = re.sub('^data:image/.+;base64,', '', base_string) # remove image header
+
+    bytes_decoded = base64.b64decode(base_string)  # string -> bytes of image
+    img = Image.open(BytesIO(bytes_decoded))  # bytes -> PIL image object
+    return img
 
 def png_to_msg(image):
     return base64.b64encode(image)
