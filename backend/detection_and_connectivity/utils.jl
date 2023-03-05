@@ -1,5 +1,3 @@
-__precompile__() 
-
 import MetaGraphsNext
 import Graphs
 import JSON
@@ -10,6 +8,18 @@ import OrdinaryDiffEq, Plots
 using ModelingToolkitStandardLibrary.Electrical
 using ModelingToolkitStandardLibrary.Blocks: Constant
 using Compose, Cairo
+
+
+# base data structures
+struct Room
+	Name::String
+	Vol::Float64
+end
+
+struct Wall
+	Ar::Float64
+	t::Float64
+end
 
 ## Three Port for Room component
 function ThreePort_Room(; name, v1_start = 283.0, v2_start = 0.0, i1_start = 0.0, i2_start = 0.0, i3_start = 0.0)
@@ -100,5 +110,3 @@ function Room_component(; name, Croom, V_heating, V_desired, proportional_const)
     extend(ODESystem(room_eqs, t, [], pars; name = name, continuous_events), threeport_room)   
 
 end
-
-#end
