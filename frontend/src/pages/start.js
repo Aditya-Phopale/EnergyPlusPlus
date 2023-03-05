@@ -51,8 +51,7 @@ const Start = () => {
     reader.onloadend = function() {
       console.log("sending an image...")
       Http.open("POST", url, false);  // true for async image sending
-      // Http.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-      Http.send("picture=" + reader.result.toString());
+      Http.send("picture=" + reader.result.toString()); // sending plain-text
     }
     reader.readAsDataURL(file);
     
