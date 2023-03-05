@@ -13,25 +13,26 @@ import cv2
 import torch
 from IPython.display import display
 import PIL
-from tkinter import *   # linux name
-# from tk import *  # MacOS name
+# from tkinter import *   # linux name
+from tk import *  # MacOS name
 import json
 import os
 
+FIG_PATH = "images/"
 os.chdir("detection_and_connectivity")
 
-path = "floor_plan.png"
-path = cv2.imread(path)
+filename = "floor_plan.png"
+floors_image = cv2.imread(FIG_PATH + filename)
 
 # Loading model with the best run so far
 model = torch.hub.load('ultralytics/yolov5', 'custom', 'best.pt',)
 model.conf = 0.52
 # Evaluating the model on a test image
 model.eval()
-result = model(path)
+result = model(floors_image)
 
 # Displaying the co-ordinates of the bounding boxes
-display(PIL.Image.open("test.png"))
+# display(PIL.Image.open("test.png"))
 bb_dataframe = result.pandas().xyxy[0]
 print(bb_dataframe)
 
@@ -152,18 +153,18 @@ for i in range(len(temp)):
 # Rendering the image with bounding boxes
 result.render(labels=True)
 result.save(labels=True, save_dir="./")
-os.system("mv './.2/image0.jpg' boxed_rooms.jpg")
+os.system("mv './.2/image0.jpg' " + FIG_PATH + "boxed_rooms.jpg")
 os.system("rmdir ./.2")
-image = PIL.Image.open("boxed_rooms.jpg")
+image = PIL.Image.open(FIG_PATH + "boxed_rooms.jpg")
 draw  = PIL.ImageDraw.Draw(image)
 font  = PIL.ImageFont.truetype("arial.ttf", 50, encoding="unic")
 for text, coordinates in zip(entity_labels, centers):
     # annotate each room and save with each annotation
     draw.text( (coordinates[0],coordinates[1]), text, font=font, fill="#0000FF")
-    image.save("boxed_ordered_rooms.png","png")
+    image.save(FIG_PATH + "boxed_ordered_rooms.png","png")
 draw.text([1,5000],str(connectivity), font=font, fill="#0000FF")
-image.save("boxed_ordered_rooms.png","png")
-display(PIL.Image.open("boxed_ordered_rooms.png"))
+image.save(FIG_PATH + "boxed_ordered_rooms.png","png")
+# display(PIL.Image.open(FIG_PATH + "boxed_ordered_rooms.png"))
 
 # Writing connnectivity into json file
 with open("connectivity.json","w+") as f:
