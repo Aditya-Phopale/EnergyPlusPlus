@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-# coding: utf-8
+# Copyright (c) 2023 EnergyPlusPlus, a collaboration between BGCE and Siemens. All rights reserved.
 
-# Energy PLUS PLUS - ML Demo/ Graph Generation
 from tkinter import *
 import json
 import cv2
@@ -9,7 +7,7 @@ import torch
 from IPython.display import display
 import PIL
 import argparse
-
+import os
 
 def visualize_result(saved_path):
     """
@@ -20,11 +18,10 @@ def visualize_result(saved_path):
         boxes on the image
     """
     im = cv2.imread(saved_path)
-    resized = cv2.resize(im, (1200, 1500))
+    resized = cv2.resize(im, (640, 480))
     cv2.imshow("PRED", resized)
     cv2.waitKey(0)
-    display(PIL.Image.open("image0.png"))
-
+    
 
 def save_result(result, connectivity, entity_labels, centers, saved_path):
     """
@@ -43,16 +40,24 @@ def save_result(result, connectivity, entity_labels, centers, saved_path):
     # sudo previously to remove the duplicate everytime but it is very hacky and needs
     # a better solution.
     result.render(labels=True)
-    result.save(labels=True, save_dir="./result_folder")
-    image = PIL.Image.open(saved_path)
+    result.save(labels=True, save_dir="results_folder")
+    folder_list = [folder for folder in os.listdir(".") if folder.startswith("results_folder") and os.path.isdir(folder)]
+    # Sort the list based on the numerical part of the folder names
+    folder_list_sorted = sorted(folder_list, key=lambda x: int(x[-1]) if x[-1].isdigit() else -1)
+    # Get the last (i.e., largest) folder in the sorted list
+    try:
+        latest_folder = folder_list_sorted[-1]
+    except IndexError:
+        latest_folder = "results_folder"
+    image = PIL.Image.open("./"+latest_folder+"/image0.jpg")
     draw = PIL.ImageDraw.Draw(image)
     font = PIL.ImageFont.truetype("arial.ttf", 50, encoding="unic")
     for text, coordinates in zip(entity_labels, centers):
         # annotate each room and save with each annotation
         draw.text((coordinates[0], coordinates[1]), text, font=font, fill="#0000FF")
-        image.save(saved_path, "png")
+        image.save(saved_path, "PNG")
     draw.text([1, 5000], str(connectivity), font=font, fill="#0000FF")
-    image.save(saved_path, "png")
+    image.save(saved_path, "PNG")
 
 
 # Writing connnectivity into json file
@@ -212,7 +217,6 @@ def connect_neighbors(
                         overlap / mult_factors[idx]
                     )
                 one_side_overlap += overlap
-    print(one_side_overlap)
     return one_side_overlap
 
 
@@ -261,6 +265,7 @@ def connect_all(result):
             current_room[2].item(),
             current_room[3].item(),
         )
+        centers.append(((x1min+x1max)/2, (y1min+y1max)/2))
         area = ((x1max - x1min) * (y1max - y1min)) / area_factor
         volume = area * height
         connectivity[entity_labels[i]]["area"] = area
@@ -290,7 +295,6 @@ def connect_all(result):
                     neighbor_room_components,
                     mult_factors,
                 )
-        print(perimeter, overall_overlap)
         if overall_overlap < perimeter:
             wall_length = (perimeter - overall_overlap) / x_factor
             add_ambient_node(connectivity, current_room_components, wall_length)
@@ -343,8 +347,7 @@ if __name__ == "__main__":
     result = detect_rooms(image_path, model_path)
     # bb_dataframe = result.pandas().xyxy[0]
     connectivity_dict, entity_labels, centers = connect_all(result)
-    # comment this out if only json is required - does not effect json results
+    # comment the folllowing 2 lines out if only json is required - does not effect json results
     # save_result(result, connectivity_dict, entity_labels, centers, saved_path)
-    # comment this out to turn off image pop up
     # visualize_result(saved_path)
     write_to_json(connectivity_dict)
