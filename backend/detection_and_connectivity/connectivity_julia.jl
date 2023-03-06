@@ -129,6 +129,8 @@ for currWall in walls
     global i = i+1
 end
 
+Random.seed!(321)
+
 @named Room_array 1:nRooms i -> Room_component_pid(; Croom = buildNetwork[MetaGraphsNext.label_for( buildNetwork, i)].Vol * rho * Cp, V_heating, V_desired, proportional_const = prop_const[i])
 
 # Define capacitance for rooms
@@ -174,7 +176,7 @@ println("Executed successfully")
 Plots.plot()
 
 for i in 1:nRooms
-   Plots.plot!(sol, vars = [Room_array[i].random], labels = "Room Temperature "*string(i-1), linewidth=3, fontsize=14, legend=:topright)
+   Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i-1), linewidth=3, fontsize=14, legend=:topright)
 #    if i==4
 #    Plots.plot!(sol, vars = [Room_array[i].i3], labels = "", linewidth=3, fontsize=14, legend=:bottomright)
 #    end
@@ -182,6 +184,6 @@ for i in 1:nRooms
    # savefig(text)
 end
 Plots.xlabel!("time (s)")
-Plots.ylabel!("Heat Flux (J/s)")
+Plots.ylabel!("Temperature (K)")
 graph_title = "Prototype_Model_Simple.png"
 Plots.savefig(graph_title)
