@@ -245,7 +245,9 @@ def connect_all(result):
     # wall thickness - considered constant for the moment
     thickness = 0.25
     # Boolean to specify whether the roof boundary condition should be applied to a floor plan 
-    has_roof = True
+    # By default floor plan does not have roof
+    # if true change ki to -0.3 and kd to 1000 and increase maximum heating to 1200
+    has_roof = False
     # volume to be calculated
     volume = 0.0
     # Numpy array of results from model
