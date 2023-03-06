@@ -11,6 +11,8 @@ using ModelingToolkitStandardLibrary.Electrical
 using ModelingToolkitStandardLibrary.Blocks: Constant
 using Compose, Cairo
 
+Random.seed!(321)
+Noise_error = Distributions.Normal(0,1)
 
 ## Three Port for Room component with PID control for heating
 function ThreePort_Room_pid(; name, v1_start = 283.0, v2_start = 0.0, i1_start = 0.0, i2_start = 0.0, i3_start = 0.0)
@@ -26,6 +28,7 @@ sts = @variables begin
     # ifcond(t) = false
     error(t) = 0.0
     errorsum(t) = 0.0
+    random(t) = 0.0
     
 end
 eqs = [v1 ~ p.v - n1.v
@@ -130,7 +133,7 @@ end
 
 function Room_component_pid(; name, Croom, V_heating, V_desired, proportional_const)
     @named threeport_room = ThreePort_Room_pid()
-    @unpack v1,v2,i1,i2,i3,error,errorsum = threeport_room
+    @unpack v1,v2,i1,i2,i3,error,errorsum,random = threeport_room
 
     pars = @parameters begin 
         V_heating = V_heating
@@ -141,9 +144,10 @@ function Room_component_pid(; name, Croom, V_heating, V_desired, proportional_co
 
     room_eqs = [
             i3 ~ max(-900, min(0,(-250* error - 0.15* errorsum + 100*i2/Croom) * proportional_const))
-            error ~ (V_desired - v1) * proportional_const
+            error ~ (V_desired - v1) * proportional_const + random
             D(v1) ~ i2/Croom
             D(errorsum) ~ error * proportional_const
+            random ~ Random.rand(Noise_error)
         ]
     extend(ODESystem(room_eqs, t, [], pars; name = name), threeport_room)   
 

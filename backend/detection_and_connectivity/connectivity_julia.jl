@@ -174,7 +174,7 @@ println("Executed successfully")
 Plots.plot()
 
 for i in 1:nRooms
-   Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i-1), linewidth=3, fontsize=14, legend=:topright)
+   Plots.plot!(sol, vars = [Room_array[i].random], labels = "Room Temperature "*string(i-1), linewidth=3, fontsize=14, legend=:topright)
 #    if i==4
 #    Plots.plot!(sol, vars = [Room_array[i].i3], labels = "", linewidth=3, fontsize=14, legend=:bottomright)
 #    end
