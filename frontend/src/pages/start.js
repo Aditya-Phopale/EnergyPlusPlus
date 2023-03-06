@@ -119,6 +119,13 @@ const Start = () => {
                      max="5"
                  ></input>
              </p>
+              {/*https://www.w3schools.com/tags/tag_select.asp*/}
+              <label htmlFor="roof">What is above the floor?</label>
+              <br/>
+              <select name="roof" id="roof">
+                  <option value="roof">A roof</option>
+                  <option value="another floor">Another floor</option>
+              </select>
              {/*<p>Click on a location on the map to select it (TO BE DONE)</p>*/}
              <br/>
              <br/>

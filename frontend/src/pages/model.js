@@ -67,6 +67,6 @@ export default Model
 
 
 export const Head = () => (
-    <Seo title="Model" />
+    <Seo title="Results" />
 )
 
