@@ -303,12 +303,12 @@ def connect_all(result):
         # Checking if any part of wall is exposed to ambient
         if overall_overlap < perimeter:
             wall_length = (perimeter - overall_overlap) / x_factor
-            add_ambient_node(connectivity, current_room_components, wall_length)
-        # Checking if a floor plan has roof then connect to ambient with wall_area = room_area
-        if has_roof == True:
+            # Checking if a floor plan has roof then connect to ambient with wall_area = room_area
+            if has_roof == True:
             # Roof area exposed to ambient stored as area/height to maintain consistency with the previous ambient connection where wall length was stored. 
             # In the model setup in connectivity_julia file all the wall lengths are multiplied with height to get the area of wall.
-            add_ambient_node(connectivity, current_room_components, area/height) 
+                wall_length += area/height 
+            add_ambient_node(connectivity, current_room_components, wall_length) 
         
     return connectivity, entity_labels, centers
 
