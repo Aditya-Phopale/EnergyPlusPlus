@@ -303,11 +303,13 @@ def connect_all(result):
         # Checking if any part of wall is exposed to ambient
         if overall_overlap < perimeter:
             wall_length = (perimeter - overall_overlap) / x_factor
-            # Checking if a floor plan has roof then connect to ambient with wall_area = room_area
-            if has_roof == True:
+            add_ambient_node(connectivity, current_room_components, wall_length)
+            
+        # Checking if a floor plan has roof then connect to ambient with wall_area = room_area
+        if has_roof == True:
             # Roof area exposed to ambient stored as area/height to maintain consistency with the previous ambient connection where wall length was stored. 
             # In the model setup in connectivity_julia file all the wall lengths are multiplied with height to get the area of wall.
-                wall_length += area/height 
+            wall_length = area/height 
             add_ambient_node(connectivity, current_room_components, wall_length) 
         
     return connectivity, entity_labels, centers
@@ -361,5 +363,5 @@ if __name__ == "__main__":
     connectivity_dict, entity_labels, centers = connect_all(result)
     # comment the folllowing 2 lines out if only json is required - does not effect json results
     # save_result(result, connectivity_dict, entity_labels, centers, saved_path)
-    # visualize_result(saved_path)
+    # visualize_result(saved_path) # image pop up
     write_to_json(connectivity_dict)

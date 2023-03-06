@@ -21,7 +21,7 @@ const Model = () => (
           />
 
       <div className="row">
-        <Link to="/" className="btn btn-primary my-2">Back to homepage</Link>
+        <Link to="/" className="btn btn-primary my-2">Home</Link>
       </div>
     </div>
   </Layout>
