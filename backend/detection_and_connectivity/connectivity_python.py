@@ -13,8 +13,11 @@ import cv2
 import torch
 from IPython.display import display
 import PIL
-# from tkinter import *   # linux name
-from tk import *  # MacOS name
+import platform
+if platform.system() == 'Linux':
+    from tkinter import *  # linux name
+else:
+    from tk import *  # MacOS name
 import json
 import os
 
