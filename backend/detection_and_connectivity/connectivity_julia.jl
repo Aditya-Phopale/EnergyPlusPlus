@@ -25,7 +25,7 @@ end
 
 rooms = String[]
 for i in 1:length(connectivity)
-    text = "room" *string(i-1)
+    text = "room" *string(i)
     push!(rooms, text)
 end
 
@@ -41,6 +41,8 @@ for room in rooms
         end
     end
 end
+
+buildNetwork[Symbol("room0")] =  Room("room0", 1000)
 # println("\n NODES CREATED\n")
 
 # Create Edges
@@ -59,12 +61,13 @@ end
 
 # println("\n EDGES CREATED\n")
 
-nRooms = Graphs.nv(buildNetwork);
+nRooms = Graphs.nv(buildNetwork)-1;
 nWalls = Graphs.ne(buildNetwork);
 
+
 using GraphPlot, Colors
-nodefillc = distinguishable_colors(nRooms, colorant"blue")
-nodelabel = 0:nRooms-1
+nodefillc = distinguishable_colors(nRooms+1, colorant"blue")
+nodelabel = 1:nRooms+1
 graph_viz = gplot(buildNetwork, nodelabel=nodelabel, nodefillc=nodefillc)
 draw(PNG("graph_viz.png", 30cm, 30cm), graph_viz)
 
@@ -74,6 +77,16 @@ println("\nGraph Created Successfully!!\n")
 @parameters t
 D = Differential(t)
 
+# The Room_array  will provide a way to give the named returned value a unique value every time 
+rho = 1.225 # Kg/m3
+Cp = 1000 #J/Kg/K
+V = 273.0
+V_heating = 323.0 # Temperature heating fluid
+V_desired = 293.0 # desired Temperature
+proportional_const = 1.0 # m_dot * Cp_air
+prop_const = zeros(nRooms, 1)
+prop_const[4] = proportional_const
+
 #constVSource = 303
 #@named source = Voltage()
 #@named constant_v = Constant(k=constVSource)
@@ -81,8 +94,15 @@ D = Differential(t)
 
 rooms = MetaGraphsNext.vertices(buildNetwork)
 walls = MetaGraphsNext.edges(buildNetwork)
-eqs = []
+
+@named source = Voltage()
+@named constant_voltage = Constant(k=V)
+
+eqs = [connect(constant_voltage.output, source.V)]
+push!(eqs, connect(source.n, ground.g))
 systemBuild = [ground]
+push!(systemBuild, source)
+push!(systemBuild, constant_voltage)
 
 # adding source voltage (ambient)
 #push!(systemBuild, variable_v)
@@ -109,15 +129,6 @@ for currWall in walls
     global i = i+1
 end
 
-# The Room_array  will provide a way to give the named returned value a unique value every time 
-rho = 1.225 # Kg/m3
-Cp = 1000 #J/Kg/K
-V_heating = 323.0 # Temperature heating fluid
-V_desired = 293.0 # desired Temperature
-proportional_const = 1.0 # m_dot * Cp_air
-prop_const = zeros(nRooms, 1)
-prop_const[4] = proportional_const
-
 @named Room_array 1:nRooms i -> Room_component_pid(; Croom = buildNetwork[MetaGraphsNext.label_for( buildNetwork, i)].Vol * rho * Cp, V_heating, V_desired, proportional_const = prop_const[i])
 
 # Define capacitance for rooms
@@ -137,7 +148,11 @@ for currWall in walls
     push!(systemBuild, wall_array[i])
 	push!(eqs, connect(wall_array[i].n, ground.g))
 	push!(eqs, connect(wall_array[i].p1, Room_array[sourceRoom].p))
-	push!(eqs, connect(wall_array[i].p2, Room_array[destRoom].p))
+    if (MetaGraphsNext.label_for( buildNetwork, nRooms+1) == Symbol("room0"))
+        push!(eqs, connect(wall_array[i].p2, source.p))
+    else
+	    push!(eqs, connect(wall_array[i].p2, Room_array[destRoom].p))
+    end
     global i = i+1
 end
 
@@ -159,14 +174,14 @@ println("Executed successfully")
 Plots.plot()
 
 for i in 1:nRooms
-   Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i), linewidth=3, fontsize=14, legend=:topright)
-   #if i==4
-   #Plots.plot!(sol, vars = [Room_array[i].i3], labels = "", linewidth=3, fontsize=14, legend=:bottomright)
-   #end
+   Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i-1), linewidth=3, fontsize=14, legend=:topright)
+#    if i==4
+#    Plots.plot!(sol, vars = [Room_array[i].i3], labels = "", linewidth=3, fontsize=14, legend=:bottomright)
+#    end
    # text = "Room_"*string(i)*"_"*"Prototype_Model_Simple.png"
    # savefig(text)
 end
 Plots.xlabel!("time (s)")
-Plots.ylabel!("Temperature (K)")
+Plots.ylabel!("Heat Flux (J/s)")
 graph_title = "Prototype_Model_Simple.png"
 Plots.savefig(graph_title)

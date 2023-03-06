@@ -140,8 +140,11 @@ def add_ambient_node(connectivity, current_room_component, wall_length):
         current_room_component list: list of all components of the current room
         wall_length float: length of wall exposed to ambient condition
     """
-    connectivity[current_room_component]["neighbors"].append("room0")
-    connectivity[current_room_component]["wall"].append(wall_length)
+    if "room0" in connectivity[current_room_component]["neighbors"]:
+        connectivity[current_room_component]["wall"][connectivity[current_room_component]["neighbors"].index("room0")] += wall_length
+    else:
+        connectivity[current_room_component]["neighbors"].append("room0")
+        connectivity[current_room_component]["wall"].append(wall_length)
 
 
 def connect_neighbors(
@@ -239,8 +242,12 @@ def connect_all(result):
     area_factor = x_factor * y_factor
     # height assumed constant for the moment
     height = 3.0
-    # wll thickness - considered constant for the moment
+    # wall thickness - considered constant for the moment
     thickness = 0.25
+    # Boolean to specify whether the roof boundary condition should be applied to a floor plan 
+    # By default floor plan does not have roof
+    # if true change ki to -0.3 and kd to 1000 and increase maximum heating to 1200
+    has_roof = False
     # volume to be calculated
     volume = 0.0
     # Numpy array of results from model
@@ -295,9 +302,18 @@ def connect_all(result):
                     neighbor_room_components,
                     mult_factors,
                 )
+        # Checking if any part of wall is exposed to ambient
         if overall_overlap < perimeter:
             wall_length = (perimeter - overall_overlap) / x_factor
             add_ambient_node(connectivity, current_room_components, wall_length)
+            
+        # Checking if a floor plan has roof then connect to ambient with wall_area = room_area
+        if has_roof == True:
+            # Roof area exposed to ambient stored as area/height to maintain consistency with the previous ambient connection where wall length was stored. 
+            # In the model setup in connectivity_julia file all the wall lengths are multiplied with height to get the area of wall.
+            wall_length = area/height 
+            add_ambient_node(connectivity, current_room_components, wall_length) 
+        
     return connectivity, entity_labels, centers
 
 
