@@ -1,15 +1,7 @@
 run(`sudo chmod +rwx connectivity.json`)
 include("utils.jl")
-
-struct Room
-	Name::String
-	Vol::Float64
-end
-
-struct Wall
-	Ar::Float64
-	t::Float64
-end
+include("custom_datastructure.jl")
+include("thermal_model_gen.jl")
 
 println("\nRUNNING JULIA SCRIPT\n")
 
@@ -30,6 +22,7 @@ for i in 1:length(connectivity)
 end
 
 buildNetwork = MetaGraphsNext.MetaGraph(Graphs.Graph(), VertexData = Room, EdgeData = Wall, graph_data = "build connec model")
+
 # Create Nodes
 # The room name cannot directly be fed into the network Symbol so it has to be
 # converted to a Symbol first and then used
