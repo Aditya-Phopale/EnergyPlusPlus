@@ -11,56 +11,14 @@ height = 3.0
 # parsing JSON file generated to extract connectivity (neighbours, wall and room data) information
 connectivity = parse_JSON()
 
-rooms = String[]
-for i in 1:length(connectivity)
-    text = "room" *string(i)
-    push!(rooms, text)
-end
+# creating a graph with data from connectivity
+buildNetwork = create_graph(connectivity)
 
-buildNetwork = MetaGraphsNext.MetaGraph(Graphs.Graph(), VertexData = Room, EdgeData = Wall, graph_data = "build connec model")
-
-# Create Nodes
-# The room name cannot directly be fed into the network Symbol so it has to be
-# converted to a Symbol first and then used
-for room in rooms
-    for (key, value) in connectivity
-        if (room==key)
-            sym = Symbol(key)
-            buildNetwork[sym] = Room(key, connectivity[key]["volume"])
-        end
-    end
-end
-
-buildNetwork[Symbol("room0")] =  Room("room0", 1000)
-# println("\n NODES CREATED\n")
-
-# Create Edges
-for (key, value) in connectivity
-    itr = 1
-    if length(connectivity[key]["neighbors"])!=0
-        for rooms in connectivity[key]["neighbors"]
-            area = connectivity[key]["wall"][itr] * height
-            sym1 = Symbol(key)
-            sym2 = Symbol(rooms)
-            buildNetwork[sym1, sym2] = Wall(area, connectivity[key]["thickness"])
-            itr+=1
-        end
-    end
-end
-
-# println("\n EDGES CREATED\n")
+# plotting the generated graph and saving
+plot_graph(buildNetwork)
 
 nRooms = Graphs.nv(buildNetwork)-1;
 nWalls = Graphs.ne(buildNetwork);
-
-
-using GraphPlot, Colors
-nodefillc = distinguishable_colors(nRooms+1, colorant"blue")
-nodelabel = 1:nRooms+1
-graph_viz = gplot(buildNetwork, nodelabel=nodelabel, nodefillc=nodefillc)
-draw(PNG("graph_viz.png", 30cm, 30cm), graph_viz)
-
-println("\nGraph Created Successfully!!\n")
 
 @named ground = Ground()
 @parameters t
