@@ -1,19 +1,15 @@
-run(`sudo chmod +rwx connectivity.json`)
 include("utils.jl")
 include("custom_datastructure.jl")
 include("thermal_model_gen.jl")
 
 println("\nRUNNING JULIA SCRIPT\n")
 
+
 # metadata that can be added to python later. Assuming a value for now
 height = 3.0
-connectivity = Dict()
-# using connectivity from json and converting it into a julia dictionary
-JSON.open("connectivity.json", "r") do f
-    global connectivity
-    dicttxt = JSON.read(f, String)  # file information to string
-    connectivity = JSON.parse(dicttxt)  # parse and transform data
-end
+
+# parsing JSON file generated to extract connectivity (neighbours, wall and room data) information
+connectivity = parse_JSON()
 
 rooms = String[]
 for i in 1:length(connectivity)
