@@ -109,7 +109,7 @@ V_heating = 323.0 # Temperature heating fluid
 V_desired = 293.0 # desired Temperature
 proportional_const = 15.0 # m_dot * Cp_air
 prop_const = zeros(nRooms, 1)
-# prop_const[4] = proportional_const  # supply heat to room 4
+# prop_const[0] = proportional_const  # supply heat to room 0
 
 @named Room_array 1:nRooms i -> Room_component(; Croom = buildNetwork[MetaGraphsNext.label_for( buildNetwork, i)].Vol * rho * Cp, V_heating, V_desired, proportional_const)
 
@@ -149,11 +149,11 @@ sol = OrdinaryDiffEq.solve(prob, OrdinaryDiffEq.Tsit5())
 println("Executed successfully")
 # Plots.plot()
 
-# for i in 1:nRooms
-    # Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i), legend=:bottomleft)
+for i in 1:nRooms
+    Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i), legend=:bottomleft)
     # text = "Room_" * string(i) * "_" * "Prototype_Model_Simple.png"
     # savefig(FIG_PATH * text)
-# end
+end
 
 Plots.xlabel!("time (s)")
 Plots.ylabel!("Temperature (K)")
