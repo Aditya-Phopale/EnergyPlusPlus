@@ -1,4 +1,4 @@
-using GraphPlot, Colors
+using GraphPlot, Colors, Plots
 
 """
 plots the MetaGraph
@@ -15,7 +15,7 @@ end
 """
 plot simulation results
 """
-function plot_results(buildNetwork)
+function plot_results(buildNetwork, sol, Room_array, wall_array)
     nRooms = Graphs.nv(buildNetwork)-1;
     Plots.plot()
 

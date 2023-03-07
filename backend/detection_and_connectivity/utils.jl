@@ -6,7 +6,7 @@ import JSON
 import IfElse
 
 using ModelingToolkit 
-import OrdinaryDiffEq, Plots
+import OrdinaryDiffEq
 using ModelingToolkitStandardLibrary.Electrical
 using ModelingToolkitStandardLibrary.Blocks: Constant
 using Compose, Cairo

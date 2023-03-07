@@ -67,13 +67,11 @@ Generates the circuit with nodes as Capacitor + heating source
 and walls as 2R1C circuit 
 Returns an ODE system
 """
-function creat_thermalnetwork(buildNetwork)
+function creat_thermalnetwork(buildNetwork, t)
     nRooms = Graphs.nv(buildNetwork)-1;
     nWalls = Graphs.ne(buildNetwork);
     
     @named ground = Ground()
-    @parameters t
-    D = Differential(t)
     
     # The Room_array  will provide a way to give the named returned value a unique value every time 
     rho = 1.225 # Kg/m3
@@ -90,7 +88,7 @@ function creat_thermalnetwork(buildNetwork)
     #@named constant_v = Constant(k=constVSource)
     #@named variable_v = Cosine(frequency=frequency, amplitude=10, phase=pi, offset=293.0, smooth=true)
     
-    rooms = MetaGraphsNext.vertices(buildNetwork)
+    #rooms = MetaGraphsNext.vertices(buildNetwork)
     walls = MetaGraphsNext.edges(buildNetwork)
     
     @named source = Voltage()
@@ -154,5 +152,5 @@ function creat_thermalnetwork(buildNetwork)
     
     @named buildingThermalModel = ODESystem(eqs, t, systems=systemBuild)
 
-    return buildingThermalModel
+    return buildingThermalModel, Room_array, wall_array
 end

@@ -16,8 +16,11 @@ buildNetwork = create_graph(connectivity)
 plot_graph(buildNetwork)
 println("\nGraph Created Successfully!!\n")
 
+@parameters t
+D = Differential(t)
+
 # creating the thermal model (system of ode) from the graph as input
-buildingThermalModel = creat_thermalnetwork(buildNetwork)
+buildingThermalModel, Room_array, wall_array = creat_thermalnetwork(buildNetwork, t)
 println("\n Built Thermal Model \n")
 
 # simplifying the ode system
@@ -31,4 +34,5 @@ sol = OrdinaryDiffEq.solve(prob, OrdinaryDiffEq.Tsit5())
 
 println("Executed successfully")
 
-plot_results(buildNetwork)
+# plotting simulation results
+plot_results(buildNetwork, sol, Room_array, wall_array)
