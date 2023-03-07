@@ -51,6 +51,7 @@ const Start = () => {
     }
     var file = document.getElementById("image-input").files[0];
     var reader = new FileReader();
+    localStorage.setItem("filename", selectedFile.name);
 
     const Http = new XMLHttpRequest();
     const url='http://localhost:6969/image/' + selectedFile.name;
@@ -58,7 +59,7 @@ const Start = () => {
 
     reader.onloadend = function() {
       console.log("sending an image...")
-      Http.open("POST", url, false);  // true for async image sending
+      Http.open("POST", url, true);  // true for async image sending
       Http.send("picture=" + reader.result.toString()); // sending plain-text
     }
     reader.readAsDataURL(file);
