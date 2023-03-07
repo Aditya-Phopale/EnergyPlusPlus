@@ -1,7 +1,7 @@
 # https://tms-dev-blog.com/python-backend-with-javascript-frontend-how-to/
 # https://github.com/josephlee94/intuitive-deep-learning/blob/master/Building%20a%20Web%20Application%20to%20Deploy%20Machine%20Learning%C2%A0Models/imgrec_webapp.py
 
-from flask import Flask, request
+from flask import Flask, request, send_file
 import flask
 from flask_cors import CORS
 from PIL import Image
@@ -16,6 +16,9 @@ base_image = dict()
 rooms_image = dict()
 connectivity = dict()
 rc_data = dict()
+
+loading_img = "./detection_and_connectivity/images/loading.png"
+
 
 # runs all of the code on a single image
 @app.route('/image/<picture_id>', methods = ['POST'])
@@ -35,18 +38,34 @@ def callback(picture_id):
         return flask.Response(response={"status":"success"}, status=201)
     return flask.Response(status=403)  # operation not permitted
 
+
 # fetches modelling data for result page
-@app.route('/model/<picture_id>')
+@app.route('/model/rooms/<picture_id>')
+def callback_rooms(picture_id):
+    if request.method == "GET":
+        if picture_id in rooms_image:
+            return None # flask.Responce(responce=)
+        return send_file(loading_img, mimetype='image/gif')
+    return flask.Response(status=403)  # operation not permitted
+
+
+@app.route('/model/graph/<picture_id>')
+def callback_graph(picture_id):
+    if request.method == "GET":
+        if picture_id in connectivity:
+            return None # flask.Responce(responce=)
+        return send_file(loading_img, mimetype='image/gif')
+    return flask.Response(status=403)  # operation not permitted
+
+
+@app.route('/model/rc/<picture_id>')
 def callback_rc(picture_id):
     if request.method == "GET":
         if picture_id in rc_data:
-            # configure xml format response with 
-            modelling_data = "rc=" + dt.img_to_msg(rc_data[picture_id]) + \
-                                ";rooms_image=" + dt.img_to_msg(rooms_image[picture_id]) + \
-                                ";connectivity=" + dt.img_to_msg(connectivity[picture_id])
-            return flask.Response(response=modelling_data, status=201)
-        return flask.Response(status=201)
+            return None # flask.Responce(responce=)
+        return send_file(loading_img, mimetype='image/png')
     return flask.Response(status=403)  # operation not permitted
+
 
 if __name__ == "__main__":
     app.run("localhost", 6969)
