@@ -1,7 +1,7 @@
 include("thermal_model_gen.jl")
+include("plot_functions.jl")
 
 println("\nRUNNING JULIA SCRIPT\n")
-
 
 # metadata that can be added to python later. Assuming a value for now
 height = 3.0
@@ -31,17 +31,4 @@ sol = OrdinaryDiffEq.solve(prob, OrdinaryDiffEq.Tsit5())
 
 println("Executed successfully")
 
-Plots.plot()
-
-for i in 1:nRooms
-   Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i-1), linewidth=3, fontsize=14, legend=:topright)
-#    if i==4
-#    Plots.plot!(sol, vars = [Room_array[i].i3], labels = "", linewidth=3, fontsize=14, legend=:bottomright)
-#    end
-   # text = "Room_"*string(i)*"_"*"Prototype_Model_Simple.png"
-   # savefig(text)
-end
-Plots.xlabel!("time (s)")
-Plots.ylabel!("Heat Flux (J/s)")
-graph_title = "Prototype_Model_Simple.png"
-Plots.savefig(graph_title)
+plot_results(buildNetwork)

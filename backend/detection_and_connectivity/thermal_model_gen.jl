@@ -1,6 +1,5 @@
 include("utils.jl")
 include("custom_datastructure.jl")
-using GraphPlot, Colors
 
 """
 parse_JSON() reads the JSON file and returns connectivity dictionary
@@ -60,18 +59,6 @@ function create_graph(connectivity)
 
     return buildNetwork
 end
-
-"""
-plots the MetaGraph
-"""
-function plot_graph(buildNetwork)
-    nRooms = Graphs.nv(buildNetwork)-1;
-    nodefillc = distinguishable_colors(nRooms+1, colorant"blue")
-    nodelabel = 1:nRooms+1
-    graph_viz = gplot(buildNetwork, nodelabel=nodelabel, nodefillc=nodefillc)
-    draw(PNG("graph_viz.png", 30cm, 30cm), graph_viz)
-end
-
 
 """
 creating thermal network
