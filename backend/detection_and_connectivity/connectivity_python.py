@@ -9,6 +9,7 @@ import PIL
 import argparse
 import os
 
+
 def visualize_result(saved_path):
     """
     Visualize the image after drawing bounding boxes.
@@ -21,7 +22,7 @@ def visualize_result(saved_path):
     resized = cv2.resize(im, (640, 480))
     cv2.imshow("PRED", resized)
     cv2.waitKey(0)
-    
+
 
 def save_result(result, connectivity, entity_labels, centers, saved_path):
     """
@@ -35,26 +36,17 @@ def save_result(result, connectivity, entity_labels, centers, saved_path):
         saved_path str: Path where the image is saved
     """
     # Rendering the image with bounding boxes
-    # TODO: The save directory is created every time a new image is predicted upon.
-    # So this would result in result_folder1 result_folder2 and so on. It was using
-    # sudo previously to remove the duplicate everytime but it is very hacky and needs
-    # a better solution.
     result.render(labels=True)
     result.save(labels=True, save_dir="results_folder")
-    folder_list = [folder for folder in os.listdir(".") if folder.startswith("results_folder") and os.path.isdir(folder)]
-    # Sort the list based on the numerical part of the folder names
-    folder_list_sorted = sorted(folder_list, key=lambda x: int(x[-1]) if x[-1].isdigit() else -1)
-    # Get the last (i.e., largest) folder in the sorted list
-    try:
-        latest_folder = folder_list_sorted[-1]
-    except IndexError:
-        latest_folder = "results_folder"
-    image = PIL.Image.open("./"+latest_folder+"/image0.jpg")
+    os.system("mv ./results_folder/* ./")
+    os.system("rmdir ./results_folder*")
+    image = PIL.Image.open("./image0.jpg")
     draw = PIL.ImageDraw.Draw(image)
     font = PIL.ImageFont.truetype("arial.ttf", 50, encoding="unic")
     for text, coordinates in zip(entity_labels, centers):
         # annotate each room and save with each annotation
-        draw.text((coordinates[0], coordinates[1]), text, font=font, fill="#0000FF")
+        draw.text((coordinates[0], coordinates[1]),
+                  text, font=font, fill="#0000FF")
         image.save(saved_path, "PNG")
     draw.text([1, 5000], str(connectivity), font=font, fill="#0000FF")
     image.save(saved_path, "PNG")
@@ -140,11 +132,8 @@ def add_ambient_node(connectivity, current_room_component, wall_length):
         current_room_component list: list of all components of the current room
         wall_length float: length of wall exposed to ambient condition
     """
-    if "room0" in connectivity[current_room_component]["neighbors"]:
-        connectivity[current_room_component]["wall"][connectivity[current_room_component]["neighbors"].index("room0")] += wall_length
-    else:
-        connectivity[current_room_component]["neighbors"].append("room0")
-        connectivity[current_room_component]["wall"].append(wall_length)
+    connectivity[current_room_component]["neighbors"].append("room0")
+    connectivity[current_room_component]["wall"].append(wall_length)
 
 
 def connect_neighbors(
@@ -244,7 +233,7 @@ def connect_all(result):
     height = 3.0
     # wall thickness - considered constant for the moment
     thickness = 0.25
-    # Boolean to specify whether the roof boundary condition should be applied to a floor plan 
+    # Boolean to specify whether the roof boundary condition should be applied to a floor plan
     # By default floor plan does not have roof
     # if true change ki to -0.3 and kd to 1000 and increase maximum heating to 1200
     has_roof = False
@@ -302,18 +291,16 @@ def connect_all(result):
                     neighbor_room_components,
                     mult_factors,
                 )
-        # Checking if any part of wall is exposed to ambient
-        if overall_overlap < perimeter:
-            wall_length = (perimeter - overall_overlap) / x_factor
-            add_ambient_node(connectivity, current_room_components, wall_length)
-            
+        wall_length = (perimeter - overall_overlap) / x_factor
         # Checking if a floor plan has roof then connect to ambient with wall_area = room_area
         if has_roof == True:
-            # Roof area exposed to ambient stored as area/height to maintain consistency with the previous ambient connection where wall length was stored. 
+            # Roof area exposed to ambient stored as area/height to maintain consistency with the previous ambient connection where wall length was stored.
             # In the model setup in connectivity_julia file all the wall lengths are multiplied with height to get the area of wall.
-            wall_length = area/height 
-            add_ambient_node(connectivity, current_room_components, wall_length) 
-        
+            wall_length += area/height
+        # Checking if any part of wall is exposed to ambient
+        if overall_overlap < perimeter:
+            add_ambient_node(
+                connectivity, current_room_components, wall_length)
     return connectivity, entity_labels, centers
 
 
@@ -343,7 +330,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Arguments for script")
     parser.add_argument("--model_path", type=str, help="path to weight file")
     parser.add_argument("--image_path", type=str, help="path to image file")
-    parser.add_argument("--saved_path", type=str, help="path to save the prediction")
+    parser.add_argument("--saved_path", type=str,
+                        help="path to save the prediction")
 
     args = parser.parse_args()
 
