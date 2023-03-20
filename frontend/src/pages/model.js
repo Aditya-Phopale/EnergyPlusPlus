@@ -1,6 +1,8 @@
 import * as React from "react"
 import { Link } from "gatsby"
 import { StaticImage } from "gatsby-plugin-image"
+import { graphql } from "gatsby"
+import { GatsbyImage, getImage } from "gatsby-plugin-image"
 
 import Layout from "../components/layout"
 import {Seo} from "../components/seo"
@@ -10,7 +12,7 @@ const Model = () => (
       <div className="container text-center my-5">
           <h1> Results</h1>
           <br/>
-          <p>The computation can take some time. Please refresh the website to see the results.</p>
+          <p>The computation can take some time (about 2 minutes). Please refresh the website to see the results.</p>
       </div>
 
       <div class = "container">
@@ -19,7 +21,7 @@ const Model = () => (
           <h2> Recognized Rooms </h2>
           <p> Here is the result for the recognition of the rooms of your building:</p>
           <StaticImage
-              src="../images/labels_cropped.png"
+              src="./../../../backend/detection_and_connectivity/images/boxed_rooms.jpg"
               width={500}
               quality={95}
               formats={["AUTO", "WEBP"]}
@@ -30,9 +32,9 @@ const Model = () => (
 
           <div className="col">
           <h2> Connectivity Graph </h2>
-          <p> Here is a simulation of your model:</p>
+          <p> Here is the detected connectivity graph:</p>
           <StaticImage
-              src="../images/graph.svg"
+              src="./../../../backend/detection_and_connectivity/images/graph_viz.png"
               height={1000}
               quality={95}
               formats={["AUTO", "WEBP"]}
@@ -45,7 +47,7 @@ const Model = () => (
           <h2> Modelling</h2>
           <p> Here is a simulation of your model:</p>
           <StaticImage
-                src="../images/Model_results.png"
+                src="./../../../backend/detection_and_connectivity/images/Prototype_Model_Simple.png"
                 width={500}
                 quality={100}
                 formats={["AUTO", "WEBP"]}
@@ -59,7 +61,6 @@ const Model = () => (
           </div>
       </div>
   </Layout>
-
 )
 
 export default Model
