@@ -70,4 +70,3 @@ export default Model
 export const Head = () => (
     <Seo title="Results" />
 )
-

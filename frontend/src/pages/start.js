@@ -49,6 +49,7 @@ const Start = () => {
       console.log("no file selected");
       return;
     }
+
     var file = document.getElementById("image-input").files[0];
     var reader = new FileReader();
     localStorage.setItem("filename", selectedFile.name);
@@ -63,6 +64,7 @@ const Start = () => {
       Http.send("picture=" + reader.result.toString()); // sending plain-text
     }
     reader.readAsDataURL(file);
+
     
     Http.onreadystatechange = () => {
       console.log(Http.responseText)

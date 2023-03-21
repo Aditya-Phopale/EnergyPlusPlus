@@ -1,12 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# ## Energy PLUS PLUS - ML Demo/ Graph Generation
-
-# This notebook has code for running the Energy++ ML model using yolov5 and then structuring the obtained bounding boxes into a connectivity graph.
-# In order to use this notebook, please ensure that this file is inside the yolov5 repository folder which you can clone from [here](https://github.com/ultralytics/yolov5). 
-# Also, the image that needs to be segmented needs to have the name "test.png" at the moment which ofcourse can be changed but you would have to edit the code.
-# Also, make sure the weights/model you wish to load is placed in yolov5/runs/train/exp/(name of your weights file .pt or .pth usually).
+# Copyright (c) 2023 EnergyPlusPlus, a collaboration between BGCE and Siemens. All rights reserved.
 
 # Importing necessary libraries
 import cv2
