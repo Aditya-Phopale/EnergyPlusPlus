@@ -111,12 +111,12 @@ def add_labels(result_array):
         if int(row[-1]) == 0:
             labels.append("room" + str(room_count))
             room_count += 1
-        elif int(row[-1]) == 1:
-            labels.append("window" + str(window_count))
-            window_count += 1
-        else:
-            labels.append("door" + str(door_count))
-            door_count += 1
+        #elif int(row[-1]) == 1:
+        #    labels.append("window" + str(window_count))
+        #    window_count += 1
+        #else:
+        #    labels.append("door" + str(door_count))
+        #    door_count += 1
 
     # reversing the list to make it consistent with detect.py results from the yolov5
     labels = list(reversed(labels))
@@ -250,6 +250,8 @@ def connect_all(result):
     connectivity = set_attributes(entity_labels)
     # access the numpy array of results - result_val is a list with length 1 - the 0th element is the prediction
     all_rooms = result_array[0]
+    mask = all_rooms[:, -1] == 0
+    all_rooms = all_rooms[mask, :]
     # array to store the centers of all bounding boxes - used later for labels
     centers = []
     # Finding connectivity and storing every connection with attributes of each room
@@ -317,7 +319,7 @@ def detect_rooms(image_path, model_path):
     """
     print("RUNNING PYTHON SCRIPT...")
     model = torch.hub.load("ultralytics/yolov5", "custom", model_path)
-    model.conf = 0.52
+    model.conf = 0.30
     # Evaluating the model on a test image
     model.eval()
     img = cv2.imread(image_path)
