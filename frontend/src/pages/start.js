@@ -5,6 +5,7 @@ import { useState, useEffect} from 'react'
 
 import Layout from "../components/layout"
 import {Seo} from "../components/seo"
+import {StaticImage} from "gatsby-plugin-image";
 
 const sendStatistics = e => {
     // send http request to a local server to post values
@@ -79,12 +80,52 @@ const Start = () => {
 
               <input className="form-control" type ="file" id="image-input" accept="image/jpeg, image/png, image/jpg"  onChange={onSelectFile}/>
               {selectedFile &&  <img src={preview} height={600} alt ={"uploaded building plan"}/> }
-
+              <br/>
+              <br/>
+              <p>Alternatively choose one of these default floorplans:</p>
+            {/*  make columns with the different floor plans */}
+              <div className="container text-center my-5">
+                  <div className="row">
+                      <div className="col">
+                          <Link to="/model_1" className="btn btn-secondary my-2">Floor plan 1</Link>
+                          <StaticImage
+                              src="../images/Default_floorplans/floorplan_1.png"
+                              width={500}
+                              quality={100}
+                              formats={["AUTO", "WEBP"]}
+                              alt="first default floor plan"
+                              className="img-fluid"
+                          />
+                      </div>
+                      <div className="col">
+                          <Link to="/model_2" className="btn btn-secondary my-2">Floor plan 2</Link>
+                          <StaticImage
+                              src="../images/Default_floorplans/floorplan_2.jpeg"
+                              width={500}
+                              quality={100}
+                              formats={["AUTO", "WEBP"]}
+                              alt="second default floor plan"
+                              className="img-fluid"
+                          />
+                      </div>
+                      <div className="col">
+                          <Link to="/model_3" className="btn btn-secondary my-2">Floor plan 3</Link>
+                          <StaticImage
+                              src="../images/Default_floorplans/floorplan_3.jpeg"
+                              width={500}
+                              quality={100}
+                              formats={["AUTO", "WEBP"]}
+                              alt="third default floor plan"
+                              className="img-fluid"
+                          />
+                      </div>
+                  </div>
+              </div>
             <br/>
             <br/>
-          </div>
+         </div>
 
-          <div className="col">
+         <div className="col">
              <h2> Provide floor data </h2>
              <p> Fill in general information: </p>
              <br/>
