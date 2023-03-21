@@ -1,5 +1,7 @@
 using GraphPlot, Colors, Plots
 
+FIG_PATH = "images/"
+
 """
 plots the MetaGraph
 """
@@ -8,7 +10,7 @@ function plot_graph(buildNetwork)
     nodefillc = distinguishable_colors(nRooms+1, colorant"blue")
     nodelabel = 1:nRooms+1
     graph_viz = gplot(buildNetwork, nodelabel=nodelabel, nodefillc=nodefillc)
-    draw(PNG("graph_viz.png", 30cm, 30cm), graph_viz)
+    draw(PNG(FIG_PATH * "graph_viz.png", 30cm, 30cm), graph_viz)
 end
 
 
@@ -30,5 +32,5 @@ function plot_results(buildNetwork, sol, Room_array, wall_array)
     Plots.xlabel!("time (s)")
     Plots.ylabel!("Heat Flux (J/s)")
     graph_title = "Prototype_Model_Simple.png"
-    Plots.savefig(graph_title)
+    Plots.savefig(FIG_PATH * graph_title)
 end
