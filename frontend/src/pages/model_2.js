@@ -46,7 +46,7 @@ const Model = () => (
                     <h2> Modelling</h2>
                     <p> Here is a simulation of your model:</p>
                     <StaticImage
-                        src="../images/Default_floorplans/Prototype_Model_Simple_1.png"
+                        src="../images/Default_floorplans/Prototype_Model_Simple_2.png"
                         width={500}
                         quality={100}
                         formats={["AUTO", "WEBP"]}

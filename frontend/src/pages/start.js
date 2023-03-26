@@ -110,7 +110,7 @@ const Start = () => {
                               className="img-fluid"
                           />
                       </div>
-                      <div className="col">
+{/*                      <div className="col">
                           <Link to="/model_3" className="btn btn-secondary my-2">Floor plan 3</Link>
                           <StaticImage
                               src="../images/Default_floorplans/floorplan_3.jpeg"
@@ -120,7 +120,7 @@ const Start = () => {
                               alt="third default floor plan"
                               className="img-fluid"
                           />
-                      </div>
+                      </div>*/}
                   </div>
               </div>
             <br/>
