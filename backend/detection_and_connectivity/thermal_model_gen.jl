@@ -76,12 +76,12 @@ function creat_thermalnetwork(buildNetwork, t)
     # The Room_array  will provide a way to give the named returned value a unique value every time 
     rho = 1.225 # Kg/m3
     Cp = 1000 #J/Kg/K
-    V = 273.0
-    V_heating = 323.0 # Temperature heating fluid
-    V_desired = 293.0 # desired Temperature
+    V = 0.0
+    V_heating = 50.0 # Temperature heating fluid
+    V_desired = 20.0 # desired Temperature
     proportional_const = 1.0 # m_dot * Cp_air
-    prop_const = ones(nRooms, 1)
-    # prop_const[4] = proportional_const
+    prop_const = zeros(nRooms, 1)
+    prop_const[4] = proportional_const
     
     #constVSource = 303
     #@named source = Voltage()
