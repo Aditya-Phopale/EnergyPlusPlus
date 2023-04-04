@@ -99,7 +99,7 @@ function wall_2R1C(; name, R1, R2, C)
     wall_eqs = [
         v2 ~ R2*i2 + vc
         v1 ~ R1*i1 + vc
-        D(vc) ~ i3/C
+        D(vc) ~ (i3/C)*3600
         ]
     extend(ODESystem(wall_eqs, t, [], pars; name = name), threeport)   
 end
@@ -121,7 +121,7 @@ function Room_component(; name, Croom, V_heating, V_desired, proportional_const)
     ]
     room_eqs = [
             i3 ~ IfElse.ifelse(ifcond == true, 0, proportional_const*(v1 - V_heating))
-            D(v1) ~ i2/Croom
+            D(v1) ~ (i2/Croom)*3600
             D(ifcond) ~ 0   
         ]
     extend(ODESystem(room_eqs, t, [], pars; name = name, continuous_events), threeport_room)   
@@ -142,8 +142,8 @@ function Room_component_pid(; name, Croom, V_heating, V_desired, proportional_co
     room_eqs = [
             i3 ~ max(-3000, min(0,(-250* error - 0.15* errorsum + 100*i2/Croom) * proportional_const))
             error ~ (V_desired - v1) * proportional_const
-            D(v1) ~ i2/Croom
-            D(errorsum) ~ error * proportional_const
+            D(v1) ~ (i2/Croom)*3600
+            D(errorsum) ~ error * proportional_const*3600
         ]
     extend(ODESystem(room_eqs, t, [], pars; name = name), threeport_room)   
 
