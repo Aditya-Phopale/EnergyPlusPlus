@@ -1,0 +1,8 @@
+venv
+__pycache__
+frontend/.cache/*
+frontend/.cache/
+frontend/public/
+node_modules/
+frontend/package-lock.json
+backend/detection_and_connectivity/connectivity.json
