@@ -360,5 +360,5 @@ if __name__ == "__main__":
     connectivity_dict, entity_labels, centers = connect_all(result)
     # comment the folllowing 2 lines out if only json is required - does not effect json results
     save_result(result, connectivity_dict, entity_labels, centers, saved_path)
-    visualize_result(saved_path) # image pop up
+    # visualize_result(saved_path) # image pop up
     write_to_json(connectivity_dict)
