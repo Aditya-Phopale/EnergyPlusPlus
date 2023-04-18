@@ -1,5 +1,3 @@
-__precompile__() 
-
 import MetaGraphsNext
 import Graphs
 import JSON

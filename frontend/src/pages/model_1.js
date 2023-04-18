@@ -1,8 +1,6 @@
 import * as React from "react"
 import { Link } from "gatsby"
 import { StaticImage } from "gatsby-plugin-image"
-import { graphql } from "gatsby"
-import { GatsbyImage, getImage } from "gatsby-plugin-image"
 
 import Layout from "../components/layout"
 import {Seo} from "../components/seo"
@@ -10,9 +8,9 @@ import {Seo} from "../components/seo"
 const Model = () => (
   <Layout>
       <div className="container text-center my-5">
-          <h1> Results</h1>
+          <h1> Results of default floor plan 1</h1>
           <br/>
-          <p>The computation can take some time (about 2 minutes). Please refresh the website to see the results.</p>
+          <p>The computation can take some time. Please refresh the website to see the results.</p>
       </div>
 
       <div class = "container">
@@ -20,8 +18,9 @@ const Model = () => (
           <div class="col">
           <h2> Recognized Rooms </h2>
           <p> Here is the result for the recognition of the rooms of your building:</p>
+
           <StaticImage
-              src="./../../../backend/detection_and_connectivity/images/boxed_rooms.jpg"
+              src="../images/Default_floorplans/1.png"
               width={500}
               quality={95}
               formats={["AUTO", "WEBP"]}
@@ -34,11 +33,11 @@ const Model = () => (
           <h2> Connectivity Graph </h2>
           <p> Here is the detected connectivity graph:</p>
           <StaticImage
-              src="./../../../backend/detection_and_connectivity/images/graph_viz.png"
-              height={1000}
-              quality={95}
+              src="../images/Default_floorplans/graph_viz_1.png"
+              width={500}
+              quality={100}
               formats={["AUTO", "WEBP"]}
-              alt="connectivity graph"
+              alt="modelling results"
               className="img-fluid"
           />
           </div>
@@ -47,7 +46,7 @@ const Model = () => (
           <h2> Modelling</h2>
           <p> Here is a simulation of your model:</p>
           <StaticImage
-                src="./../../../backend/detection_and_connectivity/images/Prototype_Model_Simple.png"
+                src="../images/Default_floorplans/Prototype_Model_Simple_1.png"
                 width={500}
                 quality={100}
                 formats={["AUTO", "WEBP"]}
@@ -61,6 +60,7 @@ const Model = () => (
           </div>
       </div>
   </Layout>
+
 )
 
 export default Model
@@ -70,3 +70,4 @@ export default Model
 export const Head = () => (
     <Seo title="Results" />
 )
+

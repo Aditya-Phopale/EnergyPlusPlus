@@ -1,71 +1,71 @@
 # https://tms-dev-blog.com/python-backend-with-javascript-frontend-how-to/
+# https://github.com/josephlee94/intuitive-deep-learning/blob/master/Building%20a%20Web%20Application%20to%20Deploy%20Machine%20Learning%C2%A0Models/imgrec_webapp.py
 
-from flask import Flask, request
+from flask import Flask, request, send_file
 import flask
-import json
 from flask_cors import CORS
+from PIL import Image
 
-import time
-
-import julia    #https://stackoverflow.com/questions/49750067/running-julia-jl-file-in-python
-
-import matplotlib.pyplot as plt
 import detection_tools as dt
 
 app = Flask(__name__)
 CORS(app)
 
-rooms_image = None
-labels = None
+# buffers
+base_image = dict()
+rooms_image = dict()
+connectivity = dict()
+rc_data = dict()
 
-@app.route('/image', methods=["POST"])
-def callback():
-    print("user endpoint reached...")
+loading_img = "./detection_and_connectivity/images/loading.png"
+
+
+# runs all of the code on a single image
+@app.route('/image/<picture_id>', methods = ['POST'])
+def callback(picture_id):
     if request.method == "POST":
-        received_data = request.get_json()
-        return_data = {
-            "status": "success"
-        }
-        print("before conversion")
-        #TODO: make the conversion work and maybe print it back
-        floor_plan = dt.msg_to_png(received_data)
-        print("after conversion")
-        rooms_image, labels = dt.detect_rooms(floor_plan)
-        return flask.Response(response=return_data, status=201)
+        print(" -> started processing " + picture_id)
+        image_data_xml = request.data  # modify, when stats are also in this call
+        floor_plan = dt.msg_to_img(image_data_xml)
+        base_image[picture_id] = floor_plan
+
+        rooms_image[picture_id] = dt.detect_rooms(floor_plan)
+        print(" -> detected rooms on " + picture_id)
+
+        rc_data[picture_id], connectivity[picture_id] = dt.run_thermal_model()
+        print(" -> ran thermal modelling on " + picture_id)
+
+        return flask.Response(response={"status":"success"}, status=201)
+    return flask.Response(status=403)  # operation not permitted
 
 
-@app.route('/rooms', methods=["GET"])
-def callback_rooms():
-    print("user endpoint rooms reached...")
-    if request.method == "GET":    
-        time.sleep(2.5)
-        return_data = {
-            #TODO: include yolov5 
-            # picture generation from yolo converted to msg
-            "status":"success"
-        }
-        print("GET request finished")
-        return flask.Response(response=return_data, status=201)
-
-@app.route('/rc', methods=["GET"])
-def callback_rc():
-    print("user endpoint rc reached...")
+# fetches modelling data for result page
+@app.route('/model/rooms/<picture_id>')
+def callback_rooms(picture_id):
     if request.method == "GET":
-        # execute julia -> plot.png is updated 
-        # TODO: make julia work 
-        time.sleep(2.5)
-        
-        # j = julia.Julia()
-        # j.include("./2R1C_simulation/wall_function.jl")
-        print("execution of julia finished")
+        if picture_id in rooms_image:
+            return None # flask.Responce(responce=)
+        return send_file(loading_img, mimetype='image/gif')
+    return flask.Response(status=403)  # operation not permitted
 
-        # return the results to frontend 
-        return_data = {
-            # picture generation from rc converted to msg
-            "status":"success"
-        }
-        print("GET request finished")
-        return flask.Response(response=return_data, status=201)
+
+@app.route('/model/graph/<picture_id>')
+def callback_graph(picture_id):
+    if request.method == "GET":
+        if picture_id in connectivity:
+            return None # flask.Responce(responce=)
+        return send_file(loading_img, mimetype='image/gif')
+    return flask.Response(status=403)  # operation not permitted
+
+
+@app.route('/model/rc/<picture_id>')
+def callback_rc(picture_id):
+    if request.method == "GET":
+        if picture_id in rc_data:
+            return None # flask.Responce(responce=)
+        return send_file(loading_img, mimetype='image/png')
+    return flask.Response(status=403)  # operation not permitted
+
 
 if __name__ == "__main__":
     app.run("localhost", 6969)

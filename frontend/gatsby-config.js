@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
     title: `Energy++`,
-    description: `A simple bootstrap 5 and Sass starter for Gatsby. This barebones starter ships with the main Gatsby configuration files you might need.`,
+    description: `Automatic heating system control tool. Provides modelling of the heat flow and heaters control in the building based on 2D plans and sensor data.`,
     author: `@meike_sophie`,
   },
   plugins: [

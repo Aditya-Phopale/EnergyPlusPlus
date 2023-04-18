@@ -1,12 +1,16 @@
 # Copyright (c) 2023 EnergyPlusPlus, a collaboration between BGCE and Siemens. All rights reserved.
 
-from tkinter import *
-import json
+# Importing necessary libraries
 import cv2
 import torch
 from IPython.display import display
 import PIL
-import argparse
+import platform
+if platform.system() == 'Linux':
+    from tkinter import *  # linux name
+else:
+    from tk import *  # MacOS name
+import json
 import os
 
 
@@ -282,29 +286,59 @@ def connect_all(result):
                 )
                 # x2c, y2c = (x2min+x2max)/2 , (y2min + y2max)/2
                 # check if the box i and j overlap on the "right" by offset amounts
-                mult_factors = [y_factor, y_factor, x_factor, x_factor]
-                current_room_components = entity_labels[i]
-                neighbor_room_components = entity_labels[j]
-                overall_overlap += connect_neighbors(
-                    connectivity,
-                    current_coordinates,
-                    neighbor_coordinates,
-                    current_room_components,
-                    neighbor_room_components,
-                    mult_factors,
-                )
-        wall_length = (perimeter - overall_overlap) / x_factor
-        # Checking if a floor plan has roof then connect to ambient with wall_area = room_area
-        if has_roof == True:
-            # Roof area exposed to ambient stored as area/height to maintain consistency with the previous ambient connection where wall length was stored.
-            # In the model setup in connectivity_julia file all the wall lengths are multiplied with height to get the area of wall.
-            wall_length += area/height
-        # Checking if any part of wall is exposed to ambient
-        if overall_overlap < perimeter:
-            add_ambient_node(
-                connectivity, current_room_components, wall_length)
-    return connectivity, entity_labels, centers
+                if abs(x1max - x2min)<=offset:
+                    # standard iou technique - calculate overlap
+                    overlap = abs(min(y1max,y2max) - max(y1min, y2min))
+                    union = y1max - y1min + y2max - y2min - overlap
+                    # the percentage of overlap is above IOU, consider it a true neighbor
+                    intersection = overlap/union
+                    #print("right", intersection)
+                    if intersection>IOU:
+                            connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
+                            connectivity[entity_labels[i]]["wall"].append(overlap/y_factor)
+                # check for left neighbors
+                if abs(x1min - x2max)<=offset:
+                    overlap = abs(min(y1max,y2max) - max(y1min, y2min))
+                    union = y1max - y1min + y2max - y2min - overlap
+                    intersection = overlap/union
+                    #print("left", intersection)
+                    if intersection>IOU:
+                            connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
+                            connectivity[entity_labels[i]]["wall"].append(overlap//y_factor)
+                # check for top neighbors          
+                if abs(y1max - y2min)<=offset:
+                    overlap = abs(min(x1max,x2max) - max(x1min, x2min))
+                    union = x1max - x1min + x2max - x2min - overlap
+                    intersection = overlap/union 
+                    #print("top", intersection)
+                    if intersection>IOU:
+                            connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
+                            connectivity[entity_labels[i]]["wall"].append(overlap/x_factor)
+                # check for bottom neighbors
+                if abs(y1min - y2max)<=offset:
+                    overlap = abs(min(x1max,x2max) - max(x1min, x2min))
+                    union = x1max - x1min + x2max - x2min - overlap
+                    intersection = overlap/union
+                    #print("bottom", intersection)
+                    if intersection>IOU:   
+                            connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
+                            connectivity[entity_labels[i]]["wall"].append(overlap/x_factor)
 
+# Rendering the image with bounding boxes
+result.render(labels=True)
+result.save(labels=True, save_dir="./")
+os.system("mv './.2/image0.jpg' " + FIG_PATH + "boxed_rooms.jpg")
+os.system("rmdir ./.2")
+image = PIL.Image.open(FIG_PATH + "boxed_rooms.jpg")
+draw  = PIL.ImageDraw.Draw(image)
+font  = PIL.ImageFont.truetype("arial.ttf", 50, encoding="unic")
+for text, coordinates in zip(entity_labels, centers):
+    # annotate each room and save with each annotation
+    draw.text( (coordinates[0],coordinates[1]), text, font=font, fill="#0000FF")
+    image.save(FIG_PATH + "boxed_ordered_rooms.png","png")
+draw.text([1,5000],str(connectivity), font=font, fill="#0000FF")
+image.save(FIG_PATH + "boxed_ordered_rooms.png","png")
+# display(PIL.Image.open(FIG_PATH + "boxed_ordered_rooms.png"))
 
 def detect_rooms(image_path, model_path):
     """
@@ -350,10 +384,4 @@ if __name__ == "__main__":
     else:
         saved_path = "./output.png"
 
-    result = detect_rooms(image_path, model_path)
-    # bb_dataframe = result.pandas().xyxy[0]
-    connectivity_dict, entity_labels, centers = connect_all(result)
-    # comment the folllowing 2 lines out if only json is required - does not effect json results
-    # save_result(result, connectivity_dict, entity_labels, centers, saved_path)
-    # visualize_result(saved_path) # image pop up
-    write_to_json(connectivity_dict)
+os.chdir("../")

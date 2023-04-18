@@ -1,12 +1,14 @@
 include("utils.jl")
 include("custom_datastructure.jl")
 
+FIG_PATH = "images/"
+
 """
 parse_JSON() reads the JSON file and returns connectivity dictionary
 with neighbours information, wall and room area/volume data
 """
 function parse_JSON()
-    run(`sudo chmod +rwx connectivity.json`)
+    # run(`sudo chmod +rwx connectivity.json`) ????
     connectivity = Dict()
     # using connectivity from json and converting it into a julia dictionary
     JSON.open("connectivity.json", "r") do f
@@ -23,7 +25,7 @@ returns a MetaGraph with room data at nodes and wall data at edges
 function create_graph(connectivity)
     rooms = String[]
     for i in 1:length(connectivity)
-        text = "room" *string(i)
+        text = "room" * string(i)
         push!(rooms, text)
     end
 
