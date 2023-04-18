@@ -27,7 +27,7 @@ println("\n Built Thermal Model \n")
 sys = structural_simplify(buildingThermalModel)
 println("\n Simplified Structure \n")
 
-prob = ODAEProblem(sys, Pair[] , (0, 86400.0))
+prob = ODAEProblem(sys, Pair[] , (0, 24.0))
 println("\n ODE problem Defined \n")
 
 sol = OrdinaryDiffEq.solve(prob, OrdinaryDiffEq.Tsit5())
