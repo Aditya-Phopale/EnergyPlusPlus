@@ -30,8 +30,8 @@ println("Built Thermal Model")
 sys = structural_simplify(buildingThermalModel)
 println("Simplified Structure")
 
-prob = ODAEProblem(sys, Pair[] , (0, 86400.0))
-println("ODE problem Defined")
+prob = ODAEProblem(sys, Pair[] , (0, 24.0))
+println("\n ODE problem Defined \n")
 
 sol = OrdinaryDiffEq.solve(prob, OrdinaryDiffEq.Tsit5())
 println("Executed successfully")

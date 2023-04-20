@@ -24,7 +24,7 @@ function plot_results(buildNetwork, sol, Room_array, wall_array)
     for i in 1:nRooms
     Plots.plot!(sol, vars = [Room_array[i].v1], labels = "Room Temperature "*string(i-1), linewidth=3, fontsize=14, legend=:topright)
     #    if i==4
-    #    Plots.plot!(sol, vars = [Room_array[i].i3], labels = "", linewidth=3, fontsize=14, legend=:bottomright)
+    #    Plots.plot!(sol, vars = [-1*Room_array[i].i3], labels = "", linewidth=3, fontsize=14, legend=:bottomright)
     #    end
     # text = "Room_"*string(i)*"_"*"Prototype_Model_Simple.png"
     # savefig(text)
