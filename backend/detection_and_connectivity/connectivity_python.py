@@ -77,6 +77,8 @@ entity_labels = list(reversed(entity_labels))
 
 # setting attributes for each room
 for i in range(len(entity_labels)):
+    if entity_labels[i].startswith("door") or entity_labels[i].startswith("window"):
+        continue
     connectivity[entity_labels[i]] = {"neighbors":[],"wall":[],"area":0.0, "thickness": 0.25, "volume":0.0}
 
 # access the numpy array of results - result_val is a list with length 1 - the 0th element is the prediction
@@ -86,7 +88,8 @@ centers = []
 
 # Finding connectivity and storing every connection with attributes of each room
 for i in range(len(temp)):
-
+    if entity_labels[i].startswith("door") or entity_labels[i].startswith("window"):
+        continue
     # coordinates of the bounding box of the single image to be matched against all others
     x1min, y1min, x1max, y1max = temp[i][0].item(), temp[i][1].item(), temp[i][2].item(), temp[i][3].item()
     # centre of the bounding box
@@ -101,6 +104,8 @@ for i in range(len(temp)):
     connectivity[entity_labels[i]]["volume"] = volume
     # Comparing i th element with all others
     for j in range (i,len(temp)):
+        if entity_labels[j].startswith("door") or entity_labels[j].startswith("window"):
+            continue
         if i!=j:
             x2min, y2min, x2max, y2max = temp[j][0].item(), temp[j][1].item(), temp[j][2].item(), temp[j][3].item()
             # x2c, y2c = (x2min+x2max)/2 , (y2min + y2max)/2
