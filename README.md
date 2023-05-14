@@ -10,31 +10,8 @@ https://energyplusplus.gatsbyjs.io/
 
 You, of course, need a web browser to render html and css
 
-Python backend requires flask: `pip install flask flask-cors`  
+Both Python and Julia backend programs need some packages to execute properly. The requirements are encoded in files [Python_requirements.txt](Python_requirements.txt) and [Julia_requirements.jl](Julia_requirements.jl), respectively.
 
-Julia packages required:  
-
-```
-Dict{String, VersionNumber} with 18 entries:
-  "Distributions"                  => v"0.25.86"
-  "StatsPlots"                     => v"0.15.1"
-  "Graphs"                         => v"1.7.1"
-  "StochasticDiffEq"               => v"6.50.1"
-  "JSON"                           => v"0.21.3"
-  "MetaGraphsNext"                 => v"0.4.0"
-  "IfElse"                         => v"0.1.1"
-  "DataStructures"                 => v"0.18.13"
-  "Compose"                        => v"0.9.4"
-  "OrdinaryDiffEq"                 => v"6.19.0"
-  "Plots"                          => v"1.31.3"
-  "Colors"                         => v"0.12.8"
-  "ModelingToolkit"                => v"8.17.0"
-  "GraphPlot"                      => v"0.5.2"
-  "QuadGK"                         => v"2.6.0"
-  "DifferentialEquations"          => v"7.2.0"
-  "Cairo"                          => v"1.0.5"
-  "ModelingToolkitStandardLibrary" => v"1.4.0"
-```
 
 #### How to run the project with gatsby cloud web interface:  
 
