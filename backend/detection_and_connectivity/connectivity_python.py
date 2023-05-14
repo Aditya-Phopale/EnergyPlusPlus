@@ -92,7 +92,7 @@ for i in range(len(temp)):
         continue
     # coordinates of the bounding box of the single image to be matched against all others
     x1min, y1min, x1max, y1max = temp[i][0].item(), temp[i][1].item(), temp[i][2].item(), temp[i][3].item()
-    perimeter = (x1max-x1min)*(y1max-y1min)
+    perimeter = 2 * ((x1max - x1min) + (y1max - y1min))
     # centre of the bounding box
     x1c, y1c = (x1min+x1max)/2 , (y1min + y1max)/2
     # collecting centers of each bounding box
@@ -158,8 +158,8 @@ for i in range(len(temp)):
                             connectivity[entity_labels[i]]["wall"].append(overlap/x_factor)
     wall_length = (perimeter - total_overlap) / x_factor
     if total_overlap < perimeter:
-    	connectivity[entity_labels[i]]["neighbors"].append("room0")
-    	connectivity[entity_labels[i]]["wall"].append(wall_length)
+        connectivity[entity_labels[i]]["neighbors"].append("room0")
+        connectivity[entity_labels[i]]["wall"].append(wall_length)
 
 # Rendering the image with bounding boxes
 result.render(labels=True)
