@@ -53,7 +53,7 @@ result_val = result.pred
 entity_labels = []
 
 # indices for elements
-room_count = 0
+room_count = 1
 window_count = 0
 door_count = 0
 
@@ -92,6 +92,7 @@ for i in range(len(temp)):
         continue
     # coordinates of the bounding box of the single image to be matched against all others
     x1min, y1min, x1max, y1max = temp[i][0].item(), temp[i][1].item(), temp[i][2].item(), temp[i][3].item()
+    perimeter = (x1max-x1min)*(y1max-y1min)
     # centre of the bounding box
     x1c, y1c = (x1min+x1max)/2 , (y1min + y1max)/2
     # collecting centers of each bounding box
@@ -102,6 +103,7 @@ for i in range(len(temp)):
     volume = area * height
     connectivity[entity_labels[i]]["area"] = area
     connectivity[entity_labels[i]]["volume"] = volume
+    total_overlap = 0.0
     # Comparing i th element with all others
     for j in range (i,len(temp)):
         if entity_labels[j].startswith("door") or entity_labels[j].startswith("window"):
@@ -116,6 +118,7 @@ for i in range(len(temp)):
                     # standard iou technique - calculate overlap
                     overlap = (min(y1max,y2max) - max(y1min, y2min))
                     union = y1max - y1min + y2max - y2min - overlap
+                    total_overlap+=overlap
                     # the percentage of overlap is above IOU, consider it a true neighbor
                     intersection = overlap/union
                     #print("right", intersection)
@@ -125,6 +128,8 @@ for i in range(len(temp)):
                 # check for left neighbors
                 if abs(x1min - x2max)<=offset:
                     overlap = (min(y1max,y2max) - max(y1min, y2min))
+                    total_overlap+=overlap
+                    
                     union = y1max - y1min + y2max - y2min - overlap
                     intersection = overlap/union
                     #print("left", intersection)
@@ -134,6 +139,7 @@ for i in range(len(temp)):
                 # check for top neighbors
                 if abs(y1max - y2min)<=offset:
                     overlap = (min(x1max,x2max) - max(x1min, x2min))
+                    total_overlap+=overlap
                     union = x1max - x1min + x2max - x2min - overlap
                     intersection = overlap/union
                     #print("top", intersection)
@@ -143,12 +149,17 @@ for i in range(len(temp)):
                 # check for bottom neighbors
                 if abs(y1min - y2max)<=offset:
                     overlap = (min(x1max,x2max) - max(x1min, x2min))
+                    total_overlap+=overlap
                     union = x1max - x1min + x2max - x2min - overlap
                     intersection = overlap/union
                     #print("bottom", intersection)
                     if intersection>IOU:
                             connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
                             connectivity[entity_labels[i]]["wall"].append(overlap/x_factor)
+    wall_length = (perimeter - total_overlap) / x_factor
+    if total_overlap < perimeter:
+    	connectivity[entity_labels[i]]["neighbors"].append("room0")
+    	connectivity[entity_labels[i]]["wall"].append(wall_length)
 
 # Rendering the image with bounding boxes
 result.render(labels=True)
