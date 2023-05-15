@@ -125,7 +125,6 @@ for i in range(len(temp)):
                             total_overlap+=overlap
                             connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
                             connectivity[entity_labels[i]]["wall"].append(overlap/y_factor)
-                    
                 # check for left neighbors
                 if abs(x1min - x2max)<=offset:
                     overlap = (min(y1max,y2max) - max(y1min, y2min))                    
@@ -136,7 +135,6 @@ for i in range(len(temp)):
                             total_overlap+=overlap
                             connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
                             connectivity[entity_labels[i]]["wall"].append(overlap/y_factor)
-                    
                 # check for top neighbors
                 if abs(y1max - y2min)<=offset:
                     overlap = (min(x1max,x2max) - max(x1min, x2min))
@@ -147,7 +145,6 @@ for i in range(len(temp)):
                             total_overlap+=overlap
                             connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
                             connectivity[entity_labels[i]]["wall"].append(overlap/x_factor)
-                    
                 # check for bottom neighbors
                 if abs(y1min - y2max)<=offset:
                     overlap = (min(x1max,x2max) - max(x1min, x2min))
@@ -158,8 +155,20 @@ for i in range(len(temp)):
                             total_overlap+=overlap
                             connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
                             connectivity[entity_labels[i]]["wall"].append(overlap/x_factor)
-                    
     wall_length = (perimeter - total_overlap) / x_factor
+    # We do not account for the overlaps of the previous rooms with the above algorithm
+    # So we need to revisit previous neighbors in order to remove the overlaps that are not currently seen.
+    # This happens because if room 0 has room 4 for neighbor for example, room 4 will not check for room
+    # 0 overlap according to the above algorithm.
+    for previous_rooms in range(i):
+        try:
+            # if current room exists as a neighbor in a previous room, remove the wall length
+            if str(entity_labels[i]) in connectivity[str(entity_labels[previous_rooms])]["neighbors"]:
+                remove_index = connectivity[str(entity_labels[previous_rooms])]["neighbors"].index(str(entity_labels[i]))
+                wall_length -=  connectivity[str(entity_labels[previous_rooms])]["wall"][remove_index]
+        except:
+            continue
+    # print(entity_labels[i], )
     if total_overlap < perimeter:
         connectivity[entity_labels[i]]["neighbors"].append("room0")
         connectivity[entity_labels[i]]["wall"].append(wall_length)
