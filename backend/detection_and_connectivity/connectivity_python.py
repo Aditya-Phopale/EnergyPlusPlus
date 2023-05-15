@@ -135,7 +135,7 @@ for i in range(len(temp)):
                     #print("left", intersection)
                     if intersection>IOU:
                             connectivity[entity_labels[i]]["neighbors"].append(entity_labels[j])
-                            connectivity[entity_labels[i]]["wall"].append(overlap//y_factor)
+                            connectivity[entity_labels[i]]["wall"].append(overlap/y_factor)
                 # check for top neighbors
                 if abs(y1max - y2min)<=offset:
                     overlap = (min(x1max,x2max) - max(x1min, x2min))
