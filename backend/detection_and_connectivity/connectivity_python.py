@@ -23,7 +23,8 @@ def visualize_result(saved_path):
         saved_path str: path to the result saved after drawing bounding
         boxes on the image
     """
-    im = cv2.imread(saved_path)
+    print(saved_path +"detection_and_connectivity/images/boxed_ordered_rooms.png")
+    im = cv2.imread(saved_path +"/images/boxed_ordered_rooms.png")
     resized = cv2.resize(im, (640, 480))
     cv2.imshow("PRED", resized)
     cv2.waitKey(0)
@@ -41,20 +42,27 @@ def save_result(result, connectivity, entity_labels, centers, saved_path):
         saved_path str: Path where the image is saved
     """
     # Rendering the image with bounding boxes
+
+    FIG_PATH = "images/"
+    os.chdir("detection_and_connectivity")
+    filename = "floor_plan.png"
+    floors_image = cv2.imread(FIG_PATH + filename)
+
     result.render(labels=True)
-    result.save(labels=True, save_dir="results_folder")
-    os.system("mv ./results_folder/* ./")
-    os.system("rmdir ./results_folder*")
-    image = PIL.Image.open("./image0.jpg")
+    result.save(labels=True, save_dir="./")
+    os.system("mv './.2/image0.jpg' " + FIG_PATH + "boxed_rooms.jpg")
+    os.system("rmdir ./.2")
+    image = PIL.Image.open(FIG_PATH + "boxed_rooms.jpg")
     draw = PIL.ImageDraw.Draw(image)
     font = PIL.ImageFont.truetype("arial.ttf", 50, encoding="unic")
     for text, coordinates in zip(entity_labels, centers):
         # annotate each room and save with each annotation
         draw.text((coordinates[0], coordinates[1]),
                   text, font=font, fill="#0000FF")
-        image.save(saved_path, "PNG")
+        image.save(FIG_PATH + "boxed_ordered_rooms.png", "png")
     draw.text([1, 5000], str(connectivity), font=font, fill="#0000FF")
-    image.save(saved_path, "PNG")
+    image.save(FIG_PATH + "boxed_ordered_rooms.png", "png")
+    # display(PIL.Image.open(FIG_PATH + "boxed_ordered_rooms.png"))
 
 
 # Writing connnectivity into json file
@@ -116,10 +124,10 @@ def add_labels(result_array):
         if int(row[-1]) == 0:
             labels.append("room" + str(room_count))
             room_count += 1
-        #elif int(row[-1]) == 1:
+        # elif int(row[-1]) == 1:
         #    labels.append("window" + str(window_count))
         #    window_count += 1
-        #else:
+        # else:
         #    labels.append("door" + str(door_count))
         #    door_count += 1
 
@@ -193,10 +201,10 @@ def connect_neighbors(
             offset_y = y1min - y2max
         if abs(offset_x) <= offset or abs(offset_y) <= offset:
             if abs(offset_x) > 0 and abs(offset_x) <= offset:
-                overlap = (min(y1max, y2max) - max(y1min, y2min))
+                overlap = min(y1max, y2max) - max(y1min, y2min)
                 union = y1max - y1min + y2max - y2min - overlap
             if abs(offset_y) > 0 and abs(offset_y) <= offset:
-                overlap = (min(x1max, x2max) - max(x1min, x2min))
+                overlap = min(x1max, x2max) - max(x1min, x2min)
                 union = x1max - x1min + x2max - x2min - overlap
             intersection = overlap / union
             if intersection > IOU:
@@ -327,6 +335,7 @@ def detect_rooms(image_path, model_path):
     model.conf = 0.52
     # Evaluating the model on a test image
     model.eval()
+    print(image_path)
     img = cv2.imread(image_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     result = model(img)
@@ -345,16 +354,15 @@ if __name__ == "__main__":
     if args.image_path is not None:
         image_path = args.image_path
     else:
-        image_path = "./test.png"
+        image_path = "detection_and_connectivity/images/floor_plan.png"
     if args.model_path is not None:
         model_path = args.model_path
     else:
-        model_path = "./best.pt"
+        model_path = "detection_and_connectivity/best.pt"
     if args.saved_path is not None:
         saved_path = args.saved_path
     else:
-        saved_path = "./output.png"
-
+        saved_path = "./"
     result = detect_rooms(image_path, model_path)
     # bb_dataframe = result.pandas().xyxy[0]
     connectivity_dict, entity_labels, centers = connect_all(result)
