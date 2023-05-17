@@ -3,6 +3,7 @@ from io import BytesIO
 import os
 import re
 from PIL import Image
+import detection_and_connectivity.connectivity_python as connectivity
 
 BASE_PATH = "./detection_and_connectivity/"
 FIG_PATH = "./detection_and_connectivity/images/"
@@ -21,7 +22,7 @@ def img_to_msg(image):
 
 def detect_rooms(image):
     image.save(FIG_PATH + "floor_plan.png")
-    exec(open(BASE_PATH + "connectivity_python.py").read())
+    connectivity.run()
     rooms_render = Image.open(FIG_PATH + "boxed_ordered_rooms.png")
     return rooms_render
 

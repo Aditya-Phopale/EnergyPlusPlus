@@ -1,105 +1,41 @@
 # Copyright (c) 2023 EnergyPlusPlus, a collaboration between BGCE and Siemens. All rights reserved.
 
 # Importing necessary libraries
-import cv2
-import torch
 from IPython.display import display
-import PIL
 import platform
 if platform.system() == 'Linux':
     from tkinter import *  # linux name
 else:
     from tk import *  # MacOS name
 import json
-import argparse
+import PIL
+import cv2
+import torch
 import os
+import argparse
 
-
-def visualize_result(saved_path):
+def detect_rooms(image_path, model_path):
     """
-    Visualize the image after drawing bounding boxes.
+    Run the trained model to detect entities(rooms/doors/windows).
 
     Args:
-        saved_path str: path to the result saved after drawing bounding
-        boxes on the image
-    """
-    print(saved_path +"detection_and_connectivity/images/boxed_ordered_rooms.png")
-    im = cv2.imread(saved_path +"/images/boxed_ordered_rooms.png")
-    resized = cv2.resize(im, (640, 480))
-    cv2.imshow("PRED", resized)
-    cv2.waitKey(0)
-
-
-def save_result(result, connectivity, entity_labels, centers, saved_path):
-    """
-    Save image of floor plan with entity labels to saved_path.
-
-    Args:
-        result model_output: Result of the trained model
-        connectivity dict: Dictionary which defines the connectivity of the floor plan
-        entity_labels list: Label name collection for each entity in a floor plan
-        centers list: List of center of entities of a floor plan
-        saved_path str: Path where the image is saved
-    """
-    # Rendering the image with bounding boxes
-
-    FIG_PATH = "images/"
-    os.chdir("detection_and_connectivity")
-    filename = "floor_plan.png"
-    floors_image = cv2.imread(FIG_PATH + filename)
-
-    result.render(labels=True)
-    result.save(labels=True, save_dir="./")
-    os.system("mv './.2/image0.jpg' " + FIG_PATH + "boxed_rooms.jpg")
-    os.system("rmdir ./.2")
-    image = PIL.Image.open(FIG_PATH + "boxed_rooms.jpg")
-    draw = PIL.ImageDraw.Draw(image)
-    font = PIL.ImageFont.truetype("arial.ttf", 50, encoding="unic")
-    for text, coordinates in zip(entity_labels, centers):
-        # annotate each room and save with each annotation
-        draw.text((coordinates[0], coordinates[1]),
-                  text, font=font, fill="#0000FF")
-        image.save(FIG_PATH + "boxed_ordered_rooms.png", "png")
-    draw.text([1, 5000], str(connectivity), font=font, fill="#0000FF")
-    image.save(FIG_PATH + "boxed_ordered_rooms.png", "png")
-    # display(PIL.Image.open(FIG_PATH + "boxed_ordered_rooms.png"))
-
-
-# Writing connnectivity into json file
-def write_to_json(connectivity):
-    """
-    Write connectivity details obtained from the rule based detection into
-    a JSON file
-    Args:
-        connectivity dict: A dictionary with information about connectivity
-    """
-    with open("connectivity.json", "w+") as f:
-        json.dump(connectivity, f)
-    print("GRAPH WRITTEN TO JSON file")
-
-
-def set_attributes(entity_labels):
-    """
-    Set the fundamental attributes common to each entity as a dictionary
-    Args:
-        entity_labels list: A list of each label in the prediction
+        image_path str: Path to the image to be predicted upon
+        model_path str: Path to the network weights
 
     Returns:
-        dict: Connectivity dictionary with only initialized values but no connecting
-        neighbor information.
+        model_output: The prediction from the model
     """
-    # setting attributes for each room
-    connectivity = {}
-    for idx, each_label in enumerate(entity_labels):
-        connectivity[each_label] = {
-            "neighbors": [],
-            "wall": [],
-            "area": 0.0,
-            "thickness": 0.25,
-            "volume": 0.0,
-        }
-    return connectivity
 
+    print("RUNNING PYTHON SCRIPT...")
+    model = torch.hub.load("ultralytics/yolov5", "custom", model_path)
+    model.conf = 0.52
+    # Evaluating the model on a test image
+    model.eval()
+    print(image_path)
+    img = cv2.imread(image_path)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    result = model(img)
+    return result
 
 def add_labels(result_array):
     """
@@ -135,19 +71,91 @@ def add_labels(result_array):
     labels = list(reversed(labels))
     return labels
 
-
-def add_ambient_node(connectivity, current_room_component, wall_length):
+def set_attributes(entity_labels):
     """
-    Add ambient node if the outer wall is exposed significantly.
+    Set the fundamental attributes common to each entity as a dictionary
+    Args:
+        entity_labels list: A list of each label in the prediction
+
+    Returns:
+        dict: Connectivity dictionary with only initialized values but no connecting
+        neighbor information.
+    """
+    # setting attributes for each room
+    connectivity = {}
+    for idx, each_label in enumerate(entity_labels):
+        connectivity[each_label] = {
+            "neighbors": [],
+            "wall": [],
+            "area": 0.0,
+            "thickness": 0.25,
+            "volume": 0.0,
+        }
+    return connectivity
+
+def visualize_result(saved_path):
+    """
+    Visualize the image after drawing bounding boxes.
 
     Args:
-        connectivity dict: Connectivity dictionary
-        current_room_component list: list of all components of the current room
-        wall_length float: length of wall exposed to ambient condition
+        saved_path str: path to the result saved after drawing bounding
+        boxes on the image
     """
-    connectivity[current_room_component]["neighbors"].append("room0")
-    connectivity[current_room_component]["wall"].append(wall_length)
 
+    print(saved_path +"detection_and_connectivity/images/boxed_ordered_rooms.png")
+    im = cv2.imread(saved_path +"/images/boxed_ordered_rooms.png")
+    resized = cv2.resize(im, (640, 480))
+    cv2.imshow("PRED", resized)
+    cv2.waitKey(0)
+
+
+def save_result(result, connectivity, entity_labels, centers, saved_path):
+    """
+    Save image of floor plan with entity labels to saved_path.
+
+    Args:
+        result model_output: Result of the trained model
+        connectivity dict: Dictionary which defines the connectivity of the floor plan
+        entity_labels list: Label name collection for each entity in a floor plan
+        centers list: List of center of entities of a floor plan
+        saved_path str: Path where the image is saved
+    """
+
+    # Rendering the image with bounding boxes
+    FIG_PATH = "images/"
+    os.chdir("detection_and_connectivity")
+    filename = "floor_plan.png"
+    floors_image = cv2.imread(FIG_PATH + filename)
+
+    result.render(labels=True)
+    result.save(labels=True, save_dir="./")
+    os.system("mv './.2/image0.jpg' " + FIG_PATH + "boxed_rooms.jpg")
+    os.system("rmdir ./.2")
+    image = PIL.Image.open(FIG_PATH + "boxed_rooms.jpg")
+    draw = PIL.ImageDraw.Draw(image)
+    font = PIL.ImageFont.truetype("arial.ttf", 50, encoding="unic")
+    for text, coordinates in zip(entity_labels, centers):
+        # annotate each room and save with each annotation
+        draw.text((coordinates[0], coordinates[1]),
+                  text, font=font, fill="#0000FF")
+        image.save(FIG_PATH + "boxed_ordered_rooms.png", "png")
+    draw.text([1, 5000], str(connectivity), font=font, fill="#0000FF")
+    image.save(FIG_PATH + "boxed_ordered_rooms.png", "png")
+    # display(PIL.Image.open(FIG_PATH + "boxed_ordered_rooms.png"))
+
+
+# Writing connnectivity into json file
+def write_to_json(connectivity):
+    """
+    Write connectivity details obtained from the rule based detection into
+    a JSON file
+    Args:
+        connectivity dict: A dictionary with information about connectivity
+    """
+    with open("connectivity.json", "w+") as f:
+        json.dump(connectivity, f)
+    print("GRAPH WRITTEN TO JSON file")
+    os.chdir("../")
 
 def connect_neighbors(
     connectivity,
@@ -223,6 +231,18 @@ def connect_neighbors(
                     )
                 one_side_overlap += overlap
     return one_side_overlap
+
+def add_ambient_node(connectivity, current_room_component, wall_length):
+    """
+    Add ambient node if the outer wall is exposed significantly.
+
+    Args:
+        connectivity dict: Connectivity dictionary
+        current_room_component list: list of all components of the current room
+        wall_length float: length of wall exposed to ambient condition
+    """
+    connectivity[current_room_component]["neighbors"].append("room0")
+    connectivity[current_room_component]["wall"].append(wall_length)
 
 
 def connect_all(result):
@@ -318,36 +338,11 @@ def connect_all(result):
                 connectivity, current_room_components, wall_length)
     return connectivity, entity_labels, centers
 
-
-def detect_rooms(image_path, model_path):
-    """
-    Run the trained model to detect entities(rooms/doors/windows).
-
-    Args:
-        image_path str: Path to the image to be predicted upon
-        model_path str: Path to the network weights
-
-    Returns:
-        model_output: The prediction from the model
-    """
-    print("RUNNING PYTHON SCRIPT...")
-    model = torch.hub.load("ultralytics/yolov5", "custom", model_path)
-    model.conf = 0.52
-    # Evaluating the model on a test image
-    model.eval()
-    print(image_path)
-    img = cv2.imread(image_path)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    result = model(img)
-    return result
-
-
-if __name__ == "__main__":
+def run():
     parser = argparse.ArgumentParser(description="Arguments for script")
     parser.add_argument("--model_path", type=str, help="path to weight file")
     parser.add_argument("--image_path", type=str, help="path to image file")
-    parser.add_argument("--saved_path", type=str,
-                        help="path to save the prediction")
+    parser.add_argument("--saved_path", type=str, help="path to save the prediction")
 
     args = parser.parse_args()
 
@@ -355,14 +350,17 @@ if __name__ == "__main__":
         image_path = args.image_path
     else:
         image_path = "detection_and_connectivity/images/floor_plan.png"
+        
     if args.model_path is not None:
         model_path = args.model_path
     else:
         model_path = "detection_and_connectivity/best.pt"
+        
     if args.saved_path is not None:
         saved_path = args.saved_path
     else:
         saved_path = "./"
+        
     result = detect_rooms(image_path, model_path)
     # bb_dataframe = result.pandas().xyxy[0]
     connectivity_dict, entity_labels, centers = connect_all(result)
@@ -370,3 +368,6 @@ if __name__ == "__main__":
     save_result(result, connectivity_dict, entity_labels, centers, saved_path)
     # visualize_result(saved_path) # image pop up
     write_to_json(connectivity_dict)
+
+if __name__ == "__main__":
+    run()
