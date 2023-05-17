@@ -82,8 +82,8 @@ function creat_thermalnetwork(buildNetwork, t)
     V_heating = 50.0 # Temperature heating fluid
     V_desired = 20.0 # desired Temperature
     proportional_const = 1.0 # m_dot * Cp_air
-    prop_const = zeros(nRooms, 1)
-    prop_const[4] = proportional_const
+    prop_const = ones(nRooms, 1)
+    # prop_const[4] = proportional_const
     
     #constVSource = 303
     #@named source = Voltage()

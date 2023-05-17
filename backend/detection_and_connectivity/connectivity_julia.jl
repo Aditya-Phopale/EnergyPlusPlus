@@ -31,9 +31,9 @@ sys = structural_simplify(buildingThermalModel)
 println("Simplified Structure")
 
 prob = ODAEProblem(sys, Pair[] , (0, 24.0))
-println("\n ODE problem Defined \n")
+println("ODE problem Defined")
 
-sol = OrdinaryDiffEq.solve(prob, OrdinaryDiffEq.Tsit5())
+sol = OrdinaryDiffEq.solve(prob, OrdinaryDiffEq.ROCK2())
 println("Executed successfully")
 
 # plotting simulation results
