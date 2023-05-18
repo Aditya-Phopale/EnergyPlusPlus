@@ -30,7 +30,7 @@ function plot_results(buildNetwork, sol, Room_array, wall_array)
     # savefig(text)
     end
     Plots.xlabel!("time (s)")
-    Plots.ylabel!("Heat Flux (J/s)")
+    Plots.ylabel!("Temperature (deg C)")
     graph_title = "Prototype_Model_Simple.png"
     Plots.savefig(FIG_PATH * graph_title)
 end
